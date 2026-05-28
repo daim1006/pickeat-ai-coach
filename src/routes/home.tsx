@@ -111,7 +111,7 @@ function Home() {
                 ? "text-destructive"
                 : remainRatio > 0.3
                 ? "text-success"
-                : "text-warning-foreground";
+                : "text-warning";
               const R = 28;
               const C = 2 * Math.PI * R;
               const dash = (fillPct / 100) * C;
