@@ -14,6 +14,7 @@ import { Route as HomeRouteImport } from './routes/home'
 import { Route as ChatRouteImport } from './routes/chat'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ScanIndexRouteImport } from './routes/scan.index'
+import { Route as MyIndexRouteImport } from './routes/my.index'
 import { Route as HistoryIndexRouteImport } from './routes/history.index'
 import { Route as ScanUploadRouteImport } from './routes/scan.upload'
 import { Route as ScanGuideRouteImport } from './routes/scan.guide'
@@ -22,6 +23,12 @@ import { Route as OnboardingInfoRouteImport } from './routes/onboarding.info'
 import { Route as OnboardingGoalRouteImport } from './routes/onboarding.goal'
 import { Route as OnboardingFocusRouteImport } from './routes/onboarding.focus'
 import { Route as OnboardingCompleteRouteImport } from './routes/onboarding.complete'
+import { Route as MySubscriptionRouteImport } from './routes/my.subscription'
+import { Route as MyRestrictedRouteImport } from './routes/my.restricted'
+import { Route as MyNotificationsRouteImport } from './routes/my.notifications'
+import { Route as MyGoalRouteImport } from './routes/my.goal'
+import { Route as MyFocusRouteImport } from './routes/my.focus'
+import { Route as MyAccountRouteImport } from './routes/my.account'
 import { Route as HistoryIdRouteImport } from './routes/history.$id'
 import { Route as AnalyzeSavedRouteImport } from './routes/analyze.saved'
 import { Route as AnalyzeResultRouteImport } from './routes/analyze.result'
@@ -50,6 +57,11 @@ const IndexRoute = IndexRouteImport.update({
 const ScanIndexRoute = ScanIndexRouteImport.update({
   id: '/scan/',
   path: '/scan/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyIndexRoute = MyIndexRouteImport.update({
+  id: '/my/',
+  path: '/my/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HistoryIndexRoute = HistoryIndexRouteImport.update({
@@ -92,6 +104,36 @@ const OnboardingCompleteRoute = OnboardingCompleteRouteImport.update({
   path: '/onboarding/complete',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MySubscriptionRoute = MySubscriptionRouteImport.update({
+  id: '/my/subscription',
+  path: '/my/subscription',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyRestrictedRoute = MyRestrictedRouteImport.update({
+  id: '/my/restricted',
+  path: '/my/restricted',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyNotificationsRoute = MyNotificationsRouteImport.update({
+  id: '/my/notifications',
+  path: '/my/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyGoalRoute = MyGoalRouteImport.update({
+  id: '/my/goal',
+  path: '/my/goal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyFocusRoute = MyFocusRouteImport.update({
+  id: '/my/focus',
+  path: '/my/focus',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyAccountRoute = MyAccountRouteImport.update({
+  id: '/my/account',
+  path: '/my/account',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HistoryIdRoute = HistoryIdRouteImport.update({
   id: '/history/$id',
   path: '/history/$id',
@@ -122,6 +164,12 @@ export interface FileRoutesByFullPath {
   '/analyze/result': typeof AnalyzeResultRoute
   '/analyze/saved': typeof AnalyzeSavedRoute
   '/history/$id': typeof HistoryIdRoute
+  '/my/account': typeof MyAccountRoute
+  '/my/focus': typeof MyFocusRoute
+  '/my/goal': typeof MyGoalRoute
+  '/my/notifications': typeof MyNotificationsRoute
+  '/my/restricted': typeof MyRestrictedRoute
+  '/my/subscription': typeof MySubscriptionRoute
   '/onboarding/complete': typeof OnboardingCompleteRoute
   '/onboarding/focus': typeof OnboardingFocusRoute
   '/onboarding/goal': typeof OnboardingGoalRoute
@@ -130,6 +178,7 @@ export interface FileRoutesByFullPath {
   '/scan/guide': typeof ScanGuideRoute
   '/scan/upload': typeof ScanUploadRoute
   '/history/': typeof HistoryIndexRoute
+  '/my/': typeof MyIndexRoute
   '/scan/': typeof ScanIndexRoute
 }
 export interface FileRoutesByTo {
@@ -141,6 +190,12 @@ export interface FileRoutesByTo {
   '/analyze/result': typeof AnalyzeResultRoute
   '/analyze/saved': typeof AnalyzeSavedRoute
   '/history/$id': typeof HistoryIdRoute
+  '/my/account': typeof MyAccountRoute
+  '/my/focus': typeof MyFocusRoute
+  '/my/goal': typeof MyGoalRoute
+  '/my/notifications': typeof MyNotificationsRoute
+  '/my/restricted': typeof MyRestrictedRoute
+  '/my/subscription': typeof MySubscriptionRoute
   '/onboarding/complete': typeof OnboardingCompleteRoute
   '/onboarding/focus': typeof OnboardingFocusRoute
   '/onboarding/goal': typeof OnboardingGoalRoute
@@ -149,6 +204,7 @@ export interface FileRoutesByTo {
   '/scan/guide': typeof ScanGuideRoute
   '/scan/upload': typeof ScanUploadRoute
   '/history': typeof HistoryIndexRoute
+  '/my': typeof MyIndexRoute
   '/scan': typeof ScanIndexRoute
 }
 export interface FileRoutesById {
@@ -161,6 +217,12 @@ export interface FileRoutesById {
   '/analyze/result': typeof AnalyzeResultRoute
   '/analyze/saved': typeof AnalyzeSavedRoute
   '/history/$id': typeof HistoryIdRoute
+  '/my/account': typeof MyAccountRoute
+  '/my/focus': typeof MyFocusRoute
+  '/my/goal': typeof MyGoalRoute
+  '/my/notifications': typeof MyNotificationsRoute
+  '/my/restricted': typeof MyRestrictedRoute
+  '/my/subscription': typeof MySubscriptionRoute
   '/onboarding/complete': typeof OnboardingCompleteRoute
   '/onboarding/focus': typeof OnboardingFocusRoute
   '/onboarding/goal': typeof OnboardingGoalRoute
@@ -169,6 +231,7 @@ export interface FileRoutesById {
   '/scan/guide': typeof ScanGuideRoute
   '/scan/upload': typeof ScanUploadRoute
   '/history/': typeof HistoryIndexRoute
+  '/my/': typeof MyIndexRoute
   '/scan/': typeof ScanIndexRoute
 }
 export interface FileRouteTypes {
@@ -182,6 +245,12 @@ export interface FileRouteTypes {
     | '/analyze/result'
     | '/analyze/saved'
     | '/history/$id'
+    | '/my/account'
+    | '/my/focus'
+    | '/my/goal'
+    | '/my/notifications'
+    | '/my/restricted'
+    | '/my/subscription'
     | '/onboarding/complete'
     | '/onboarding/focus'
     | '/onboarding/goal'
@@ -190,6 +259,7 @@ export interface FileRouteTypes {
     | '/scan/guide'
     | '/scan/upload'
     | '/history/'
+    | '/my/'
     | '/scan/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -201,6 +271,12 @@ export interface FileRouteTypes {
     | '/analyze/result'
     | '/analyze/saved'
     | '/history/$id'
+    | '/my/account'
+    | '/my/focus'
+    | '/my/goal'
+    | '/my/notifications'
+    | '/my/restricted'
+    | '/my/subscription'
     | '/onboarding/complete'
     | '/onboarding/focus'
     | '/onboarding/goal'
@@ -209,6 +285,7 @@ export interface FileRouteTypes {
     | '/scan/guide'
     | '/scan/upload'
     | '/history'
+    | '/my'
     | '/scan'
   id:
     | '__root__'
@@ -220,6 +297,12 @@ export interface FileRouteTypes {
     | '/analyze/result'
     | '/analyze/saved'
     | '/history/$id'
+    | '/my/account'
+    | '/my/focus'
+    | '/my/goal'
+    | '/my/notifications'
+    | '/my/restricted'
+    | '/my/subscription'
     | '/onboarding/complete'
     | '/onboarding/focus'
     | '/onboarding/goal'
@@ -228,6 +311,7 @@ export interface FileRouteTypes {
     | '/scan/guide'
     | '/scan/upload'
     | '/history/'
+    | '/my/'
     | '/scan/'
   fileRoutesById: FileRoutesById
 }
@@ -240,6 +324,12 @@ export interface RootRouteChildren {
   AnalyzeResultRoute: typeof AnalyzeResultRoute
   AnalyzeSavedRoute: typeof AnalyzeSavedRoute
   HistoryIdRoute: typeof HistoryIdRoute
+  MyAccountRoute: typeof MyAccountRoute
+  MyFocusRoute: typeof MyFocusRoute
+  MyGoalRoute: typeof MyGoalRoute
+  MyNotificationsRoute: typeof MyNotificationsRoute
+  MyRestrictedRoute: typeof MyRestrictedRoute
+  MySubscriptionRoute: typeof MySubscriptionRoute
   OnboardingCompleteRoute: typeof OnboardingCompleteRoute
   OnboardingFocusRoute: typeof OnboardingFocusRoute
   OnboardingGoalRoute: typeof OnboardingGoalRoute
@@ -248,6 +338,7 @@ export interface RootRouteChildren {
   ScanGuideRoute: typeof ScanGuideRoute
   ScanUploadRoute: typeof ScanUploadRoute
   HistoryIndexRoute: typeof HistoryIndexRoute
+  MyIndexRoute: typeof MyIndexRoute
   ScanIndexRoute: typeof ScanIndexRoute
 }
 
@@ -286,6 +377,13 @@ declare module '@tanstack/react-router' {
       path: '/scan'
       fullPath: '/scan/'
       preLoaderRoute: typeof ScanIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my/': {
+      id: '/my/'
+      path: '/my'
+      fullPath: '/my/'
+      preLoaderRoute: typeof MyIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/history/': {
@@ -344,6 +442,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingCompleteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/my/subscription': {
+      id: '/my/subscription'
+      path: '/my/subscription'
+      fullPath: '/my/subscription'
+      preLoaderRoute: typeof MySubscriptionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my/restricted': {
+      id: '/my/restricted'
+      path: '/my/restricted'
+      fullPath: '/my/restricted'
+      preLoaderRoute: typeof MyRestrictedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my/notifications': {
+      id: '/my/notifications'
+      path: '/my/notifications'
+      fullPath: '/my/notifications'
+      preLoaderRoute: typeof MyNotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my/goal': {
+      id: '/my/goal'
+      path: '/my/goal'
+      fullPath: '/my/goal'
+      preLoaderRoute: typeof MyGoalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my/focus': {
+      id: '/my/focus'
+      path: '/my/focus'
+      fullPath: '/my/focus'
+      preLoaderRoute: typeof MyFocusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my/account': {
+      id: '/my/account'
+      path: '/my/account'
+      fullPath: '/my/account'
+      preLoaderRoute: typeof MyAccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/history/$id': {
       id: '/history/$id'
       path: '/history/$id'
@@ -384,6 +524,12 @@ const rootRouteChildren: RootRouteChildren = {
   AnalyzeResultRoute: AnalyzeResultRoute,
   AnalyzeSavedRoute: AnalyzeSavedRoute,
   HistoryIdRoute: HistoryIdRoute,
+  MyAccountRoute: MyAccountRoute,
+  MyFocusRoute: MyFocusRoute,
+  MyGoalRoute: MyGoalRoute,
+  MyNotificationsRoute: MyNotificationsRoute,
+  MyRestrictedRoute: MyRestrictedRoute,
+  MySubscriptionRoute: MySubscriptionRoute,
   OnboardingCompleteRoute: OnboardingCompleteRoute,
   OnboardingFocusRoute: OnboardingFocusRoute,
   OnboardingGoalRoute: OnboardingGoalRoute,
@@ -392,6 +538,7 @@ const rootRouteChildren: RootRouteChildren = {
   ScanGuideRoute: ScanGuideRoute,
   ScanUploadRoute: ScanUploadRoute,
   HistoryIndexRoute: HistoryIndexRoute,
+  MyIndexRoute: MyIndexRoute,
   ScanIndexRoute: ScanIndexRoute,
 }
 export const routeTree = rootRouteImport
