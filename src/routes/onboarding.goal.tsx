@@ -23,6 +23,20 @@ function saveGoal(id: string, label: string, focus: string[]) {
       "onboarding.healthGoal",
       JSON.stringify({ id, label, focus })
     );
+    // Reset previously saved focus selections so the next step
+    // can pre-select the recommended ingredients for this goal.
+    const prevRaw = localStorage.getItem("onboarding.focus");
+    if (prevRaw) {
+      try {
+        const prev = JSON.parse(prevRaw);
+        localStorage.setItem(
+          "onboarding.focus",
+          JSON.stringify({ ...prev, sel: focus })
+        );
+      } catch {
+        localStorage.removeItem("onboarding.focus");
+      }
+    }
   } catch {}
 }
 
