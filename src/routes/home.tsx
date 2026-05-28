@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { BottomNav } from "@/components/BottomNav";
 import { Mascot } from "@/components/Mascot";
@@ -8,11 +9,26 @@ export const Route = createFileRoute("/home")({
   component: Home,
 });
 
-const focus = [
-  { label: "당", value: 28, max: 50, unit: "g", color: "bg-warning" },
-  { label: "나트륨", value: 1200, max: 2000, unit: "mg", color: "bg-primary" },
-  { label: "포화지방", value: 8, max: 15, unit: "g", color: "bg-secondary" },
+type NumericFocus = { kind: "numeric"; label: string; value: number; max: number; unit: string };
+type DetectFocus = { kind: "detect"; label: string; detected: boolean };
+type FocusItem = NumericFocus | DetectFocus;
+
+const NUMERIC_DEFAULTS: Record<string, { max: number; unit: string; current: number }> = {
+  당류: { max: 70, unit: "g", current: 28 },
+  나트륨: { max: 1500, unit: "mg", current: 1200 },
+  포화지방: { max: 10, unit: "g", current: 8 },
+  카페인: { max: 300, unit: "mg", current: 34 },
+  단백질: { max: 70, unit: "g", current: 45 },
+};
+
+const DETECT_KEYS = new Set(["대체당", "첨가물"]);
+
+const DEFAULT_FOCUS: FocusItem[] = [
+  { kind: "numeric", label: "당류", value: 28, max: 70, unit: "g" },
+  { kind: "numeric", label: "나트륨", value: 1200, max: 1500, unit: "mg" },
+  { kind: "numeric", label: "포화지방", value: 8, max: 10, unit: "g" },
 ];
+
 
 const eaten = [
   { name: "제로콜라 500ml", brand: "코카콜라", status: "ok", time: "13:20" },
