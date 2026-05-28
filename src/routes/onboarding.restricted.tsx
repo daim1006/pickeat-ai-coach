@@ -23,7 +23,9 @@ function OnbRestricted() {
         <h2 className="text-2xl font-extrabold tracking-tight leading-snug">
           피해야 하는<br />성분이 있나요?
         </h2>
-        <p className="mt-2 text-[14px] text-muted-foreground">없다면 건너뛸 수 있어요</p>
+        <p className="mt-2 text-[14px] text-muted-foreground">
+          선택한 성분이 원재료명에 포함되면 강하게 알려드려요.
+        </p>
 
         <div className="mt-8 grid grid-cols-3 gap-2.5">
           {items.map((it) => {
