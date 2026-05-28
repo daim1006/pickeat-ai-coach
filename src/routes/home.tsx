@@ -103,15 +103,15 @@ function Home() {
               const remainRatio = Math.max(0, Math.min(1, 1 - ratio));
               const fillPct = exceeded ? 100 : Math.round(remainRatio * 100);
               const color = exceeded
-                ? "var(--destructive)"
+                ? "hsl(var(--destructive))"
                 : remainRatio > 0.3
-                ? "var(--success)"
-                : "var(--warning)";
+                ? "hsl(var(--success))"
+                : "hsl(var(--warning))";
               const textColor = exceeded
                 ? "text-destructive"
                 : remainRatio > 0.3
                 ? "text-success"
-                : "text-warning";
+                : "text-warning-foreground";
               const R = 28;
               const C = 2 * Math.PI * R;
               const dash = (fillPct / 100) * C;
@@ -119,10 +119,10 @@ function Home() {
                 <div key={n.label} className="flex flex-col items-center">
                   <div className="relative size-[72px]">
                     <svg viewBox="0 0 72 72" className="size-[72px] -rotate-90">
-                      <circle cx="36" cy="36" r={R} fill="none" stroke="var(--muted)" strokeWidth="8" />
+                      <circle cx="36" cy="36" r={R} fill="none" stroke="hsl(var(--muted))" strokeWidth="6" />
                       <circle
                         cx="36" cy="36" r={R}
-                        fill="none" stroke={color} strokeWidth="8" strokeLinecap="round"
+                        fill="none" stroke={color} strokeWidth="6" strokeLinecap="round"
                         strokeDasharray={`${dash} ${C}`}
                       />
                     </svg>
