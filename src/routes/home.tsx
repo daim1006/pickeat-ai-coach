@@ -59,7 +59,6 @@ function Home() {
         const saved = JSON.parse(raw);
         const sel: string[] = Array.isArray(saved.sel) ? saved.sel : [];
         const targets: Record<string, number> = saved.targets ?? {};
-        setHasSaved(true);
         setChips(sel);
         const numeric = sel
           .filter((label) => !DETECT_KEYS.has(label) && NUMERIC_DEFAULTS[label]);
