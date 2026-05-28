@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { TopBar } from "@/components/TopBar";
 import { AnalysisView } from "@/components/AnalysisView";
@@ -8,9 +8,11 @@ export const Route = createFileRoute("/analyze/result")({
 });
 
 function Result() {
+  const navigate = useNavigate();
   return (
     <AppShell>
-      <TopBar title="분석 결과" />
+      <TopBar title="분석 결과" onBack={() => navigate({ to: "/home" })} />
+
       <AnalysisView />
 
       <div className="sticky bottom-0 bg-background/95 backdrop-blur px-5 pt-3 pb-6 border-t border-border">
