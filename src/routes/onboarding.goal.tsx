@@ -92,6 +92,9 @@ function OnbGoal() {
         <div className="flex-1 min-h-6" />
         <Link
           to="/onboarding/focus"
+          onClick={() => {
+            if (selected) saveGoal(selected.id, selected.label, selected.focus);
+          }}
           className={cn(
             "h-14 mt-6 rounded-2xl text-base font-semibold grid place-items-center",
             sel ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground pointer-events-none"
