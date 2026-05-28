@@ -29,6 +29,7 @@ import { Route as MyNotificationsRouteImport } from './routes/my.notifications'
 import { Route as MyGoalRouteImport } from './routes/my.goal'
 import { Route as MyFocusRouteImport } from './routes/my.focus'
 import { Route as MyAccountRouteImport } from './routes/my.account'
+import { Route as HistoryProteinShakeRouteImport } from './routes/history.protein-shake'
 import { Route as HistoryIdRouteImport } from './routes/history.$id'
 import { Route as AnalyzeSavedRouteImport } from './routes/analyze.saved'
 import { Route as AnalyzeResultRouteImport } from './routes/analyze.result'
@@ -134,6 +135,11 @@ const MyAccountRoute = MyAccountRouteImport.update({
   path: '/my/account',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HistoryProteinShakeRoute = HistoryProteinShakeRouteImport.update({
+  id: '/history/protein-shake',
+  path: '/history/protein-shake',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HistoryIdRoute = HistoryIdRouteImport.update({
   id: '/history/$id',
   path: '/history/$id',
@@ -164,6 +170,7 @@ export interface FileRoutesByFullPath {
   '/analyze/result': typeof AnalyzeResultRoute
   '/analyze/saved': typeof AnalyzeSavedRoute
   '/history/$id': typeof HistoryIdRoute
+  '/history/protein-shake': typeof HistoryProteinShakeRoute
   '/my/account': typeof MyAccountRoute
   '/my/focus': typeof MyFocusRoute
   '/my/goal': typeof MyGoalRoute
@@ -190,6 +197,7 @@ export interface FileRoutesByTo {
   '/analyze/result': typeof AnalyzeResultRoute
   '/analyze/saved': typeof AnalyzeSavedRoute
   '/history/$id': typeof HistoryIdRoute
+  '/history/protein-shake': typeof HistoryProteinShakeRoute
   '/my/account': typeof MyAccountRoute
   '/my/focus': typeof MyFocusRoute
   '/my/goal': typeof MyGoalRoute
@@ -217,6 +225,7 @@ export interface FileRoutesById {
   '/analyze/result': typeof AnalyzeResultRoute
   '/analyze/saved': typeof AnalyzeSavedRoute
   '/history/$id': typeof HistoryIdRoute
+  '/history/protein-shake': typeof HistoryProteinShakeRoute
   '/my/account': typeof MyAccountRoute
   '/my/focus': typeof MyFocusRoute
   '/my/goal': typeof MyGoalRoute
@@ -245,6 +254,7 @@ export interface FileRouteTypes {
     | '/analyze/result'
     | '/analyze/saved'
     | '/history/$id'
+    | '/history/protein-shake'
     | '/my/account'
     | '/my/focus'
     | '/my/goal'
@@ -271,6 +281,7 @@ export interface FileRouteTypes {
     | '/analyze/result'
     | '/analyze/saved'
     | '/history/$id'
+    | '/history/protein-shake'
     | '/my/account'
     | '/my/focus'
     | '/my/goal'
@@ -297,6 +308,7 @@ export interface FileRouteTypes {
     | '/analyze/result'
     | '/analyze/saved'
     | '/history/$id'
+    | '/history/protein-shake'
     | '/my/account'
     | '/my/focus'
     | '/my/goal'
@@ -324,6 +336,7 @@ export interface RootRouteChildren {
   AnalyzeResultRoute: typeof AnalyzeResultRoute
   AnalyzeSavedRoute: typeof AnalyzeSavedRoute
   HistoryIdRoute: typeof HistoryIdRoute
+  HistoryProteinShakeRoute: typeof HistoryProteinShakeRoute
   MyAccountRoute: typeof MyAccountRoute
   MyFocusRoute: typeof MyFocusRoute
   MyGoalRoute: typeof MyGoalRoute
@@ -484,6 +497,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MyAccountRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/history/protein-shake': {
+      id: '/history/protein-shake'
+      path: '/history/protein-shake'
+      fullPath: '/history/protein-shake'
+      preLoaderRoute: typeof HistoryProteinShakeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/history/$id': {
       id: '/history/$id'
       path: '/history/$id'
@@ -524,6 +544,7 @@ const rootRouteChildren: RootRouteChildren = {
   AnalyzeResultRoute: AnalyzeResultRoute,
   AnalyzeSavedRoute: AnalyzeSavedRoute,
   HistoryIdRoute: HistoryIdRoute,
+  HistoryProteinShakeRoute: HistoryProteinShakeRoute,
   MyAccountRoute: MyAccountRoute,
   MyFocusRoute: MyFocusRoute,
   MyGoalRoute: MyGoalRoute,
