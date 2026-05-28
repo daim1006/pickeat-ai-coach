@@ -52,11 +52,14 @@ function History() {
       <ul className="px-5 mt-4 space-y-2 pb-6">
         {data.map((d) => {
           const b = badge[d.status];
+          const isProteinShake = d.id === "4";
+          const linkProps = isProteinShake
+            ? ({ to: "/history/protein-shake" } as const)
+            : ({ to: "/history/$id", params: { id: d.id } } as const);
           return (
             <li key={d.id}>
               <Link
-                to="/history/$id"
-                params={{ id: d.id }}
+                {...linkProps}
                 className="flex items-center gap-3 p-3.5 rounded-2xl bg-surface border border-border active:bg-muted/40"
               >
                 <div className="size-14 rounded-xl bg-muted shrink-0" />
