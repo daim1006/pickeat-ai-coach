@@ -8,7 +8,7 @@ export const Route = createFileRoute("/onboarding/info")({
   component: OnbInfo,
 });
 
-const genders = ["여성", "남성", "선택 안함"];
+const genders = ["여성", "남성"];
 
 function OnbInfo() {
   const [gender, setGender] = useState<string | null>(null);
