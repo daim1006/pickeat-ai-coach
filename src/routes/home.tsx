@@ -43,6 +43,31 @@ const badge: Record<string, { label: string; cls: string }> = {
 };
 
 function Home() {
+  const [focus, setFocus] = useState<FocusItem[]>(DEFAULT_FOCUS);
+  const [chips, setChips] = useState<string[]>(["당류", "나트륨", "카페인", "포화지방", "대체당"]);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("onboarding.focus");
+      if (!raw) return;
+      const saved = JSON.parse(raw);
+      const sel: string[] = Array.isArray(saved.sel) ? saved.sel : [];
+      const targets: Record<string, number> = saved.targets ?? {};
+      if (sel.length === 0) return;
+      const next: FocusItem[] = sel.map((label) => {
+        if (DETECT_KEYS.has(label)) {
+          return { kind: "detect", label, detected: true };
+        }
+        const def = NUMERIC_DEFAULTS[label];
+        if (!def) return { kind: "detect", label, detected: false };
+        const max = typeof targets[label] === "number" ? targets[label] : def.max;
+        return { kind: "numeric", label, value: def.current, max, unit: def.unit };
+      });
+      setFocus(next);
+      setChips(sel);
+    } catch {}
+  }, []);
+
   return (
     <AppShell withBottomNav>
       <header className="px-5 pt-4 pb-2 flex items-center justify-between">
