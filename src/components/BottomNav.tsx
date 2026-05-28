@@ -50,7 +50,7 @@ function NavItem({
 }: {
   to: string;
   label: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
   active: boolean;
 }) {
   return (
