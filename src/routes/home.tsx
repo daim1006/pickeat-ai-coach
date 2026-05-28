@@ -52,7 +52,6 @@ function Home() {
       try {
         const raw = localStorage.getItem("onboarding.focus");
         if (!raw) {
-          setHasSaved(false);
           setChips([]);
           setFocus(DEFAULT_FOCUS);
           return;
