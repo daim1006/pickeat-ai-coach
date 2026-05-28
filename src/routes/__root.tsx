@@ -72,15 +72,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "EATFIT 잇핏 - AI 영양 코치" },
+      { name: "description", content: "성분표를 찍으면 잇핏이 나에게 맞는지 알려드려요." },
+      { name: "author", content: "EATFIT" },
+      { property: "og:title", content: "EATFIT 잇핏 - AI 영양 코치" },
+      { property: "og:description", content: "먹기 전에, 나에게 맞는지 먼저 확인해요." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
-    ],
     links: [
       {
         rel: "stylesheet",
