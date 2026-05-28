@@ -96,7 +96,26 @@ function Home() {
 
           <div className="mt-5 space-y-3">
             {focus.map((f) => {
+              if (f.kind === "detect") {
+                return (
+                  <div key={f.label}>
+                    <div className="flex justify-between items-center text-[12.5px]">
+                      <span className="opacity-90">{f.label}</span>
+                      <span className="font-semibold text-[11px] px-2 py-0.5 rounded-full bg-white/20">
+                        {f.detected ? "감지됨" : "없음"}
+                      </span>
+                    </div>
+                  </div>
+                );
+              }
               const pct = Math.min(100, Math.round((f.value / f.max) * 100));
+              const ratio = f.value / f.max;
+              const barCls =
+                ratio > 1
+                  ? "bg-destructive"
+                  : ratio >= 0.7
+                  ? "bg-warning"
+                  : "bg-white/90";
               return (
                 <div key={f.label}>
                   <div className="flex justify-between text-[12.5px]">
@@ -106,12 +125,13 @@ function Home() {
                     </span>
                   </div>
                   <div className="mt-1.5 h-2 rounded-full bg-white/25 overflow-hidden">
-                    <div className="h-full rounded-full bg-white/90" style={{ width: `${pct}%` }} />
+                    <div className={`h-full rounded-full ${barCls}`} style={{ width: `${pct}%` }} />
                   </div>
                 </div>
               );
             })}
           </div>
+
         </section>
 
         {/* Focus chips */}
