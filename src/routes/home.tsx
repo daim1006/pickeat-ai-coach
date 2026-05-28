@@ -48,25 +48,44 @@ function Home() {
   const [hasSaved, setHasSaved] = useState(false);
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem("onboarding.focus");
-      if (!raw) return;
-      const saved = JSON.parse(raw);
-      const sel: string[] = Array.isArray(saved.sel) ? saved.sel : [];
-      const targets: Record<string, number> = saved.targets ?? {};
-      if (sel.length === 0) return;
-      const next: FocusItem[] = sel.map((label) => {
-        if (DETECT_KEYS.has(label)) {
-          return { kind: "detect", label, detected: true };
+    const load = () => {
+      try {
+        const raw = localStorage.getItem("onboarding.focus");
+        if (!raw) {
+          setHasSaved(false);
+          setChips([]);
+          setFocus(DEFAULT_FOCUS);
+          return;
         }
-        const def = NUMERIC_DEFAULTS[label];
-        if (!def) return { kind: "detect", label, detected: false };
-        const max = typeof targets[label] === "number" ? targets[label] : def.max;
-        return { kind: "numeric", label, value: def.current, max, unit: def.unit };
-      });
-      setFocus(next);
-      setChips(sel);
-    } catch {}
+        const saved = JSON.parse(raw);
+        const sel: string[] = Array.isArray(saved.sel) ? saved.sel : [];
+        const targets: Record<string, number> = saved.targets ?? {};
+        setHasSaved(true);
+        setChips(sel);
+        const numeric = sel
+          .filter((label) => !DETECT_KEYS.has(label) && NUMERIC_DEFAULTS[label]);
+        const next: FocusItem[] = sel.map((label) => {
+          if (DETECT_KEYS.has(label)) {
+            return { kind: "detect", label, detected: true };
+          }
+          const def = NUMERIC_DEFAULTS[label];
+          if (!def) return { kind: "detect", label, detected: false };
+          const max = typeof targets[label] === "number" ? targets[label] : def.max;
+          return { kind: "numeric", label, value: def.current, max, unit: def.unit };
+        });
+        setFocus(numeric.length > 0 ? next : next);
+      } catch {}
+    };
+    load();
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === "onboarding.focus") load();
+    };
+    window.addEventListener("storage", onStorage);
+    window.addEventListener("focus", load);
+    return () => {
+      window.removeEventListener("storage", onStorage);
+      window.removeEventListener("focus", load);
+    };
   }, []);
 
   return (
