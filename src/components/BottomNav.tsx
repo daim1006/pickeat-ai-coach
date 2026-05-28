@@ -15,18 +15,18 @@ export function BottomNav() {
   const path = location.pathname;
 
   return (
-    <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[440px] z-40">
-      <div className="relative">
-        {/* Floating scan button */}
+    <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[440px] z-40 pointer-events-none">
+      <div className="relative pointer-events-none">
+        {/* Floating scan button — fully visible above nav with 16px gap */}
         <button
           onClick={() => navigate({ to: "/scan" })}
           aria-label="스캔하기"
-          className="absolute left-1/2 -translate-x-1/2 -top-7 size-16 rounded-full bg-primary text-primary-foreground grid place-items-center shadow-[var(--shadow-float)] active:scale-95 transition-transform"
+          className="pointer-events-auto absolute left-1/2 -translate-x-1/2 -top-20 size-16 rounded-full bg-primary text-primary-foreground grid place-items-center shadow-[var(--shadow-float)] ring-4 ring-background z-50 active:scale-95 transition-transform"
         >
           <ScanLine className="size-7" strokeWidth={2.4} />
         </button>
 
-        <div className="bg-surface/95 backdrop-blur border-t border-border safe-bottom">
+        <div className="pointer-events-auto bg-surface/95 backdrop-blur border-t border-border safe-bottom">
           <ul className="grid grid-cols-5 h-16 items-center">
             {tabs.slice(0, 2).map((t) => (
               <NavItem key={t.to} {...t} active={path.startsWith(t.to)} />
