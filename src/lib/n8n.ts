@@ -1,11 +1,24 @@
 /**
  * n8n Webhook 호출 유틸리티
  *
- * 환경변수 VITE_N8N_WEBHOOK_URL 에 설정된 n8n Webhook 엔드포인트로
- * POST 요청을 보내는 함수를 제공합니다.
+ * 각 기능별 n8n Webhook 엔드포인트와, 해당 엔드포인트로 POST 요청을 보내는
+ * 헬퍼 함수들을 제공합니다.
  */
 
-const WEBHOOK_URL = import.meta.env.VITE_N8N_WEBHOOK_URL as string | undefined;
+export const N8N_WEBHOOKS = {
+  /** 영양 성분표 스캔 및 분석 */
+  scan: "https://upstage15.app.n8n.cloud/webhook/scan",
+  /** 누적 섭취량 업데이트 */
+  saveIntake: "https://upstage15.app.n8n.cloud/webhook/saveIntake",
+  /** 스캔 기록 저장 */
+  saveScan: "https://upstage15.app.n8n.cloud/webhook/saveScan",
+  /** 스캔 기록 조회 */
+  historyInquire: "https://upstage15.app.n8n.cloud/webhook/historyInquire",
+  /** 챗봇 */
+  chat: "https://upstage15.app.n8n.cloud/webhook/chat",
+} as const;
+
+export type N8nWebhookKey = keyof typeof N8N_WEBHOOKS;
 
 export interface CallN8nOptions {
   /** 추가 헤더 (Content-Type: application/json 은 기본 포함) */
@@ -30,35 +43,25 @@ export class N8nError extends Error {
 }
 
 /**
- * n8n Webhook 으로 POST 요청을 보냅니다.
- *
- * @param payload  JSON 으로 직렬화 가능한 본문
- * @param options  헤더 / 타임아웃 / 파싱 옵션
- * @returns        파싱된 응답 (parseJson=false 이면 raw text)
+ * 임의의 n8n Webhook URL 로 POST 요청을 보냅니다.
  */
-export async function callN8n<TResponse = unknown, TPayload = unknown>(
+export async function postToN8n<TResponse = unknown, TPayload = unknown>(
+  url: string,
   payload: TPayload,
   options: CallN8nOptions = {},
 ): Promise<TResponse> {
-  if (!WEBHOOK_URL) {
-    throw new N8nError(
-      "VITE_N8N_WEBHOOK_URL 환경변수가 설정되지 않았습니다.",
-    );
-  }
-
   const { headers, timeoutMs = 30_000, parseJson = true, signal } = options;
 
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
-  // 외부 signal 이 abort 되면 내부 controller 도 abort
   if (signal) {
     if (signal.aborted) controller.abort();
     else signal.addEventListener("abort", () => controller.abort(), { once: true });
   }
 
   try {
-    const res = await fetch(WEBHOOK_URL, {
+    const res = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -105,4 +108,57 @@ export async function callN8n<TResponse = unknown, TPayload = unknown>(
   } finally {
     clearTimeout(timeoutId);
   }
+}
+
+/** 키로 지정한 n8n Webhook 으로 POST 요청을 보냅니다. */
+export function callN8n<TResponse = unknown, TPayload = unknown>(
+  key: N8nWebhookKey,
+  payload: TPayload,
+  options?: CallN8nOptions,
+): Promise<TResponse> {
+  return postToN8n<TResponse, TPayload>(N8N_WEBHOOKS[key], payload, options);
+}
+
+// ---------------------------------------------------------------------------
+// 기능별 헬퍼
+// ---------------------------------------------------------------------------
+
+export interface ScanPayload {
+  /** data URL 또는 base64 문자열 */
+  image: string;
+  filename?: string;
+  mimeType?: string;
+}
+
+/** 영양 성분표 스캔 및 분석 */
+export function scanNutrition<T = unknown>(payload: ScanPayload, options?: CallN8nOptions) {
+  return callN8n<T, ScanPayload>("scan", payload, options);
+}
+
+/** 누적 섭취량 업데이트 */
+export function saveIntake<T = unknown, P = unknown>(payload: P, options?: CallN8nOptions) {
+  return callN8n<T, P>("saveIntake", payload, options);
+}
+
+/** 스캔 기록 저장 */
+export function saveScan<T = unknown, P = unknown>(payload: P, options?: CallN8nOptions) {
+  return callN8n<T, P>("saveScan", payload, options);
+}
+
+/** 스캔 기록 조회 */
+export function inquireHistory<T = unknown, P = unknown>(payload: P = {} as P, options?: CallN8nOptions) {
+  return callN8n<T, P>("historyInquire", payload, options);
+}
+
+export interface ChatPayload {
+  message: string;
+  history?: Array<{ role: "user" | "ai"; text: string }>;
+}
+
+/** 챗봇 */
+export function chatWithBot<T = { reply?: string; text?: string; message?: string }>(
+  payload: ChatPayload,
+  options?: CallN8nOptions,
+) {
+  return callN8n<T, ChatPayload>("chat", payload, options);
 }
