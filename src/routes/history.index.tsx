@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { BottomNav } from "@/components/BottomNav";
 import { cn } from "@/lib/utils";
+import { inquireHistory } from "@/lib/n8n";
 
 export const Route = createFileRoute("/history/")({
   component: History,
