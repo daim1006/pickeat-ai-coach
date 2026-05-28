@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { BottomNav } from "@/components/BottomNav";
 import { Mascot } from "@/components/Mascot";
@@ -8,11 +9,26 @@ export const Route = createFileRoute("/home")({
   component: Home,
 });
 
-const focus = [
-  { label: "당", value: 28, max: 50, unit: "g", color: "bg-warning" },
-  { label: "나트륨", value: 1200, max: 2000, unit: "mg", color: "bg-primary" },
-  { label: "포화지방", value: 8, max: 15, unit: "g", color: "bg-secondary" },
+type NumericFocus = { kind: "numeric"; label: string; value: number; max: number; unit: string };
+type DetectFocus = { kind: "detect"; label: string; detected: boolean };
+type FocusItem = NumericFocus | DetectFocus;
+
+const NUMERIC_DEFAULTS: Record<string, { max: number; unit: string; current: number }> = {
+  당류: { max: 70, unit: "g", current: 28 },
+  나트륨: { max: 1500, unit: "mg", current: 1200 },
+  포화지방: { max: 10, unit: "g", current: 8 },
+  카페인: { max: 300, unit: "mg", current: 34 },
+  단백질: { max: 70, unit: "g", current: 45 },
+};
+
+const DETECT_KEYS = new Set(["대체당", "첨가물"]);
+
+const DEFAULT_FOCUS: FocusItem[] = [
+  { kind: "numeric", label: "당류", value: 28, max: 70, unit: "g" },
+  { kind: "numeric", label: "나트륨", value: 1200, max: 1500, unit: "mg" },
+  { kind: "numeric", label: "포화지방", value: 8, max: 10, unit: "g" },
 ];
+
 
 const eaten = [
   { name: "제로콜라 500ml", brand: "코카콜라", status: "ok", time: "13:20" },
@@ -27,6 +43,31 @@ const badge: Record<string, { label: string; cls: string }> = {
 };
 
 function Home() {
+  const [focus, setFocus] = useState<FocusItem[]>(DEFAULT_FOCUS);
+  const [chips, setChips] = useState<string[]>(["당류", "나트륨", "카페인", "포화지방", "대체당"]);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("onboarding.focus");
+      if (!raw) return;
+      const saved = JSON.parse(raw);
+      const sel: string[] = Array.isArray(saved.sel) ? saved.sel : [];
+      const targets: Record<string, number> = saved.targets ?? {};
+      if (sel.length === 0) return;
+      const next: FocusItem[] = sel.map((label) => {
+        if (DETECT_KEYS.has(label)) {
+          return { kind: "detect", label, detected: true };
+        }
+        const def = NUMERIC_DEFAULTS[label];
+        if (!def) return { kind: "detect", label, detected: false };
+        const max = typeof targets[label] === "number" ? targets[label] : def.max;
+        return { kind: "numeric", label, value: def.current, max, unit: def.unit };
+      });
+      setFocus(next);
+      setChips(sel);
+    } catch {}
+  }, []);
+
   return (
     <AppShell withBottomNav>
       <header className="px-5 pt-4 pb-2 flex items-center justify-between">
@@ -55,7 +96,26 @@ function Home() {
 
           <div className="mt-5 space-y-3">
             {focus.map((f) => {
+              if (f.kind === "detect") {
+                return (
+                  <div key={f.label}>
+                    <div className="flex justify-between items-center text-[12.5px]">
+                      <span className="opacity-90">{f.label}</span>
+                      <span className="font-semibold text-[11px] px-2 py-0.5 rounded-full bg-white/20">
+                        {f.detected ? "감지됨" : "없음"}
+                      </span>
+                    </div>
+                  </div>
+                );
+              }
               const pct = Math.min(100, Math.round((f.value / f.max) * 100));
+              const ratio = f.value / f.max;
+              const barCls =
+                ratio > 1
+                  ? "bg-destructive"
+                  : ratio >= 0.7
+                  ? "bg-warning"
+                  : "bg-white/90";
               return (
                 <div key={f.label}>
                   <div className="flex justify-between text-[12.5px]">
@@ -65,12 +125,13 @@ function Home() {
                     </span>
                   </div>
                   <div className="mt-1.5 h-2 rounded-full bg-white/25 overflow-hidden">
-                    <div className="h-full rounded-full bg-white/90" style={{ width: `${pct}%` }} />
+                    <div className={`h-full rounded-full ${barCls}`} style={{ width: `${pct}%` }} />
                   </div>
                 </div>
               );
             })}
           </div>
+
         </section>
 
         {/* Focus chips */}
@@ -82,7 +143,7 @@ function Home() {
             </Link>
           </div>
           <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-5 px-5 pb-1">
-            {["당", "나트륨", "카페인", "포화지방", "대체당"].map((t) => (
+            {chips.map((t) => (
               <span key={t} className="shrink-0 h-9 px-4 rounded-full bg-surface border border-border text-[13px] font-medium grid place-items-center">
                 #{t}
               </span>
