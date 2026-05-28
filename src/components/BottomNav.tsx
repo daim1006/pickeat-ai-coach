@@ -21,7 +21,7 @@ export function BottomNav() {
         <button
           onClick={() => navigate({ to: "/scan" })}
           aria-label="스캔하기"
-          className="pointer-events-auto absolute left-1/2 -translate-x-1/2 -top-20 size-16 rounded-full bg-primary text-primary-foreground grid place-items-center shadow-[var(--shadow-float)] ring-4 ring-background z-50 active:scale-95 transition-transform"
+          className="pointer-events-auto absolute left-1/2 -translate-x-1/2 -top-8 size-16 rounded-full bg-primary text-primary-foreground grid place-items-center shadow-[var(--shadow-float)] ring-4 ring-background z-50 active:scale-95 transition-transform"
         >
           <ScanLine className="size-7" strokeWidth={2.4} />
         </button>

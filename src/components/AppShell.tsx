@@ -13,7 +13,7 @@ export function AppShell({ children, className, withBottomNav }: AppShellProps) 
       <div
         className={cn(
           "flex flex-col min-h-screen",
-          withBottomNav && "pb-40",
+          withBottomNav && "pb-28",
           className
         )}
       >
