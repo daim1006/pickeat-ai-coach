@@ -103,10 +103,10 @@ function Home() {
               const remainRatio = Math.max(0, Math.min(1, 1 - ratio));
               const fillPct = exceeded ? 100 : Math.round(remainRatio * 100);
               const color = exceeded
-                ? "hsl(var(--destructive))"
+                ? "var(--destructive)"
                 : remainRatio > 0.3
-                ? "hsl(var(--success))"
-                : "hsl(var(--warning))";
+                ? "var(--success)"
+                : "var(--warning)";
               const textColor = exceeded
                 ? "text-destructive"
                 : remainRatio > 0.3
@@ -119,10 +119,10 @@ function Home() {
                 <div key={n.label} className="flex flex-col items-center">
                   <div className="relative size-[72px]">
                     <svg viewBox="0 0 72 72" className="size-[72px] -rotate-90">
-                      <circle cx="36" cy="36" r={R} fill="none" stroke="hsl(var(--muted))" strokeWidth="6" />
+                      <circle cx="36" cy="36" r={R} fill="none" stroke="var(--muted)" strokeWidth="8" />
                       <circle
                         cx="36" cy="36" r={R}
-                        fill="none" stroke={color} strokeWidth="6" strokeLinecap="round"
+                        fill="none" stroke={color} strokeWidth="8" strokeLinecap="round"
                         strokeDasharray={`${dash} ${C}`}
                       />
                     </svg>
