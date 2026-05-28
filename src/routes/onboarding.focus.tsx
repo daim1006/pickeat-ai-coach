@@ -105,6 +105,12 @@ function OnbFocus() {
     } catch {}
   };
 
+  // Persist to localStorage on every change so HOM001 reflects latest selection.
+  useEffect(() => {
+    handleSave();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sel, values]);
+
   return (
     <AppShell>
       <TopBar title="3 / 4" />
