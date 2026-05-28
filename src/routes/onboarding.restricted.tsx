@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { TopBar } from "@/components/TopBar";
 import { cn } from "@/lib/utils";
@@ -10,6 +10,7 @@ export const Route = createFileRoute("/onboarding/restricted")({
 });
 
 const items = ["유제품", "견과류", "갑각류", "글루텐", "계란", "과일류"];
+const STORAGE_KEY = "onboarding.restricted";
 
 function OnbRestricted() {
   const [sel, setSel] = useState<string[]>([]);
@@ -17,18 +18,52 @@ function OnbRestricted() {
   const [showInput, setShowInput] = useState(false);
   const [text, setText] = useState("");
 
-  const toggle = (v: string) =>
-    setSel((p) => (p.includes(v) ? p.filter((x) => x !== v) : [...p, v]));
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const p = JSON.parse(raw);
+        if (Array.isArray(p.sel)) setSel(p.sel);
+        if (Array.isArray(p.custom)) setCustom(p.custom);
+      }
+    } catch {}
+  }, []);
+
+  const persist = (nextSel: string[], nextCustom: string[]) => {
+    try {
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({ sel: nextSel, custom: nextCustom })
+      );
+    } catch {}
+  };
+
+  const toggle = (v: string) => {
+    const next = sel.includes(v) ? sel.filter((x) => x !== v) : [...sel, v];
+    setSel(next);
+    persist(next, custom);
+  };
 
   const addCustom = () => {
     const v = text.trim();
     if (!v) return;
-    if (!custom.includes(v)) setCustom((p) => [...p, v]);
+    let nextCustom = custom;
+    let nextSel = sel;
+    if (!custom.includes(v)) nextCustom = [...custom, v];
+    if (!sel.includes(v)) nextSel = [...sel, v];
+    setCustom(nextCustom);
+    setSel(nextSel);
+    persist(nextSel, nextCustom);
     setText("");
   };
 
-  const removeCustom = (v: string) =>
-    setCustom((p) => p.filter((x) => x !== v));
+  const removeCustom = (v: string) => {
+    const nextCustom = custom.filter((x) => x !== v);
+    const nextSel = sel.filter((x) => x !== v);
+    setCustom(nextCustom);
+    setSel(nextSel);
+    persist(nextSel, nextCustom);
+  };
 
   return (
     <AppShell>
@@ -59,6 +94,21 @@ function OnbRestricted() {
               </button>
             );
           })}
+          {custom.map((c) => (
+            <div
+              key={c}
+              className="relative h-16 rounded-2xl text-[14px] font-semibold border transition-all bg-destructive/10 text-destructive border-destructive flex items-center justify-center"
+            >
+              <span className="px-3 truncate">{c}</span>
+              <button
+                onClick={() => removeCustom(c)}
+                aria-label={`${c} 삭제`}
+                className="absolute top-1 right-1 size-5 rounded-full grid place-items-center bg-destructive text-destructive-foreground"
+              >
+                <X className="size-3" />
+              </button>
+            </div>
+          ))}
           <button
             onClick={() => setShowInput((v) => !v)}
             className={cn(
@@ -97,20 +147,6 @@ function OnbRestricted() {
                 추가
               </button>
             </div>
-            {custom.length > 0 && (
-              <div className="mt-3 flex flex-wrap gap-2">
-                {custom.map((c) => (
-                  <button
-                    key={c}
-                    onClick={() => removeCustom(c)}
-                    className="inline-flex items-center gap-1 h-9 px-3 rounded-full text-[13px] font-semibold bg-destructive/10 text-destructive border border-destructive"
-                  >
-                    {c}
-                    <X className="size-3.5" />
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
         )}
 
