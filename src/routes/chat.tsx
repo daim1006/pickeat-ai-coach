@@ -4,6 +4,7 @@ import { AppShell } from "@/components/AppShell";
 import { BottomNav } from "@/components/BottomNav";
 import { Mascot } from "@/components/Mascot";
 import { Send, Sparkles } from "lucide-react";
+import { chatWithBot, N8nError } from "@/lib/n8n";
 
 export const Route = createFileRoute("/chat")({
   component: Chat,
@@ -18,18 +19,38 @@ const suggestions = [
 
 interface Msg { role: "user" | "ai"; text: string }
 
+function extractReply(res: unknown): string {
+  if (!res) return "응답을 받지 못했어요.";
+  if (typeof res === "string") return res;
+  if (typeof res === "object") {
+    const r = res as Record<string, unknown>;
+    const v = r.reply ?? r.text ?? r.message ?? r.output ?? r.answer;
+    if (typeof v === "string") return v;
+  }
+  return JSON.stringify(res);
+}
+
 function Chat() {
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
+  const [sending, setSending] = useState(false);
 
-  const send = (text: string) => {
-    if (!text.trim()) return;
-    setMessages((m) => [
-      ...m,
-      { role: "user", text },
-      { role: "ai", text: "좋은 질문이에요! 잇핏이 곧 답변해 드릴게요. (데모 응답)" },
-    ]);
+  const send = async (text: string) => {
+    if (!text.trim() || sending) return;
+    const userMsg: Msg = { role: "user", text };
+    const history = [...messages, userMsg];
+    setMessages(history);
     setInput("");
+    setSending(true);
+    try {
+      const res = await chatWithBot({ message: text, history: messages });
+      setMessages((m) => [...m, { role: "ai", text: extractReply(res) }]);
+    } catch (e) {
+      const msg = e instanceof N8nError ? e.message : "응답을 받지 못했어요.";
+      setMessages((m) => [...m, { role: "ai", text: msg }]);
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -108,7 +129,7 @@ function Chat() {
             type="submit"
             aria-label="보내기"
             className="size-10 rounded-full bg-primary text-primary-foreground grid place-items-center disabled:opacity-50"
-            disabled={!input.trim()}
+            disabled={!input.trim() || sending}
           >
             <Send className="size-4" />
           </button>

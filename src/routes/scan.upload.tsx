@@ -1,16 +1,67 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useRef, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { TopBar } from "@/components/TopBar";
-import { ImagePlus, RotateCcw } from "lucide-react";
+import { ImagePlus, RotateCcw, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { scanNutrition, N8nError } from "@/lib/n8n";
 
 export const Route = createFileRoute("/scan/upload")({
   component: ScanUpload,
 });
 
+function fileToDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const fr = new FileReader();
+    fr.onload = () => resolve(String(fr.result));
+    fr.onerror = () => reject(fr.error);
+    fr.readAsDataURL(file);
+  });
+}
+
 function ScanUpload() {
-  const [picked, setPicked] = useState(false);
+  const navigate = useNavigate();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const picked = !!file;
+
+  const onPick = async (f: File | null) => {
+    if (!f) return;
+    setFile(f);
+    setError(null);
+    try {
+      setPreview(await fileToDataUrl(f));
+    } catch {
+      setPreview(null);
+    }
+  };
+
+  const onAnalyze = async () => {
+    if (!file || submitting) return;
+    setSubmitting(true);
+    setError(null);
+    try {
+      const image = preview ?? (await fileToDataUrl(file));
+      const result = await scanNutrition({
+        image,
+        filename: file.name,
+        mimeType: file.type,
+      });
+      try {
+        sessionStorage.setItem("analyze.result", JSON.stringify(result ?? {}));
+      } catch {
+        // ignore storage errors
+      }
+      navigate({ to: "/analyze/loading" });
+    } catch (e) {
+      setError(e instanceof N8nError ? e.message : "분석 요청에 실패했어요");
+      setSubmitting(false);
+    }
+  };
+
   return (
     <AppShell>
       <TopBar title="이미지 업로드" />
@@ -19,16 +70,26 @@ function ScanUpload() {
           영양성분표와 원재료명이 모두 보이는 이미지가 가장 정확해요
         </p>
 
+        <input
+          ref={inputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => onPick(e.target.files?.[0] ?? null)}
+        />
+
         <button
-          onClick={() => setPicked(true)}
+          onClick={() => inputRef.current?.click()}
           className={cn(
-            "mt-5 aspect-[3/4] w-full rounded-3xl border-2 border-dashed flex flex-col items-center justify-center gap-2 transition-all",
+            "mt-5 aspect-[3/4] w-full rounded-3xl border-2 border-dashed flex flex-col items-center justify-center gap-2 transition-all overflow-hidden",
             picked
               ? "border-primary bg-primary-soft"
               : "border-border bg-surface text-muted-foreground"
           )}
         >
-          {picked ? (
+          {picked && preview ? (
+            <img src={preview} alt="선택된 이미지" className="size-full object-cover" />
+          ) : picked ? (
             <div className="size-full rounded-3xl bg-gradient-to-br from-zinc-200 to-zinc-400 grid place-items-center text-zinc-600 font-semibold">
               선택된 이미지 미리보기
             </div>
@@ -42,24 +103,40 @@ function ScanUpload() {
 
         {picked && (
           <button
-            onClick={() => setPicked(false)}
+            onClick={() => {
+              setFile(null);
+              setPreview(null);
+              if (inputRef.current) inputRef.current.value = "";
+            }}
             className="mt-3 self-start inline-flex items-center gap-1 text-[12px] text-muted-foreground"
           >
             <RotateCcw className="size-3.5" /> 다시 선택
           </button>
         )}
 
+        {error && (
+          <p className="mt-3 text-[12px] text-destructive">{error}</p>
+        )}
+
         <div className="flex-1" />
-        <Link
-          to="/analyze/loading"
-          aria-disabled={!picked}
+        <button
+          onClick={onAnalyze}
+          disabled={!picked || submitting}
           className={cn(
             "h-14 rounded-2xl text-base font-semibold grid place-items-center",
-            picked ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground pointer-events-none"
+            picked && !submitting
+              ? "bg-primary text-primary-foreground"
+              : "bg-muted text-muted-foreground"
           )}
         >
-          분석하기
-        </Link>
+          {submitting ? (
+            <span className="inline-flex items-center gap-2">
+              <Loader2 className="size-4 animate-spin" /> 분석 중…
+            </span>
+          ) : (
+            "분석하기"
+          )}
+        </button>
       </div>
     </AppShell>
   );
