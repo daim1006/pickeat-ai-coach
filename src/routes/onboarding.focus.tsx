@@ -49,25 +49,33 @@ const defaultValues: Record<string, number> = {
 function OnbFocus() {
   const [sel, setSel] = useState<Key[]>(["당류", "나트륨"]);
   const [values, setValues] = useState<Record<string, number>>(defaultValues);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     try {
+      const goalRaw = localStorage.getItem("onboarding.healthGoal");
+      const goal = goalRaw ? JSON.parse(goalRaw) : null;
+      const goalFocus: Key[] = Array.isArray(goal?.focus)
+        ? (goal.focus.filter((k: string) => (items as string[]).includes(k)) as Key[])
+        : [];
+
       const savedFocus = localStorage.getItem("onboarding.focus");
       if (savedFocus) {
         const parsed = JSON.parse(savedFocus);
-        if (Array.isArray(parsed.sel)) setSel(parsed.sel.filter((k: string) => (items as string[]).includes(k)) as Key[]);
-        if (parsed.values) setValues((p) => ({ ...p, ...parsed.values }));
-        return;
-      }
-      const goalRaw = localStorage.getItem("onboarding.healthGoal");
-      if (goalRaw) {
-        const goal = JSON.parse(goalRaw);
-        if (Array.isArray(goal.focus)) {
-          const next = goal.focus.filter((k: string) => (items as string[]).includes(k)) as Key[];
-          if (next.length > 0) setSel(next);
+        const sameGoal = parsed?.selectedHealthGoal?.id && goal?.id
+          ? parsed.selectedHealthGoal.id === goal.id
+          : true;
+        if (sameGoal && Array.isArray(parsed.sel)) {
+          setSel(parsed.sel.filter((k: string) => (items as string[]).includes(k)) as Key[]);
+          if (parsed.values) setValues((p) => ({ ...p, ...parsed.values }));
+        } else if (goalFocus.length > 0) {
+          setSel(goalFocus);
         }
+      } else if (goalFocus.length > 0) {
+        setSel(goalFocus);
       }
     } catch {}
+    setLoaded(true);
   }, []);
 
   const toggle = (v: Key) =>
@@ -107,9 +115,10 @@ function OnbFocus() {
 
   // Persist to localStorage on every change so HOM001 reflects latest selection.
   useEffect(() => {
+    if (!loaded) return;
     handleSave();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sel, values]);
+  }, [sel, values, loaded]);
 
   return (
     <AppShell>
