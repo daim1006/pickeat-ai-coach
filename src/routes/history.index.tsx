@@ -167,7 +167,7 @@ function History() {
     }
 
     return list;
-  }, [tab, period, from, to]);
+  }, [tab, period, from, to, remote]);
 
   const grouped = useMemo(() => {
     if (tab !== "전체") return null;
