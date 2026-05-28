@@ -1,29 +1,38 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { AppShell } from "@/components/AppShell";
+import { Logo } from "@/components/Logo";
+import { Mascot } from "@/components/Mascot";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Your App" },
-      { name: "description", content: "Replace this with a one-sentence description of your app." },
-      { property: "og:title", content: "Your App" },
-      { property: "og:description", content: "Replace this with a one-sentence description of your app." },
+      { title: "EATFIT 잇핏" },
+      { name: "description", content: "먹기 전에, 나에게 맞는지 먼저 확인해요." },
     ],
   }),
-  component: Index,
+  component: Splash,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function Splash() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    const t = setTimeout(() => navigate({ to: "/start" }), 1800);
+    return () => clearTimeout(t);
+  }, [navigate]);
+
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <AppShell>
+      <div className="flex-1 flex flex-col items-center justify-center px-6 bg-gradient-to-b from-primary-soft via-background to-background">
+        <Mascot size={112} priority className="animate-in fade-in zoom-in-95 duration-700" />
+        <div className="mt-6 animate-in fade-in slide-in-from-bottom-2 duration-700">
+          <Logo />
+        </div>
+        <p className="mt-5 text-center text-[15px] text-muted-foreground leading-relaxed animate-in fade-in duration-1000">
+          먹기 전에, 나에게 맞는지<br />먼저 확인해요
+        </p>
+        <Link to="/start" className="sr-only">시작하기</Link>
+      </div>
+    </AppShell>
   );
 }

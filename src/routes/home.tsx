@@ -1,0 +1,137 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { AppShell } from "@/components/AppShell";
+import { BottomNav } from "@/components/BottomNav";
+import { Mascot } from "@/components/Mascot";
+import { Bell, ChevronRight, Sparkles } from "lucide-react";
+
+export const Route = createFileRoute("/home")({
+  component: Home,
+});
+
+const focus = [
+  { label: "당", value: 28, max: 50, unit: "g", color: "bg-warning" },
+  { label: "나트륨", value: 1200, max: 2000, unit: "mg", color: "bg-primary" },
+  { label: "포화지방", value: 8, max: 15, unit: "g", color: "bg-secondary" },
+];
+
+const eaten = [
+  { name: "제로콜라 500ml", brand: "코카콜라", status: "ok", time: "13:20" },
+  { name: "닭가슴살 샐러드", brand: "샐러디", status: "ok", time: "12:30" },
+  { name: "초코칩 쿠키", brand: "마켓오", status: "warn", time: "10:15" },
+];
+
+const badge: Record<string, { label: string; cls: string }> = {
+  ok: { label: "괜찮아요", cls: "bg-success/15 text-success" },
+  warn: { label: "조금만", cls: "bg-warning/15 text-warning-foreground" },
+  bad: { label: "패스", cls: "bg-destructive/15 text-destructive" },
+};
+
+function Home() {
+  return (
+    <AppShell withBottomNav>
+      <header className="px-5 pt-4 pb-2 flex items-center justify-between">
+        <div>
+          <div className="text-[13px] text-muted-foreground">안녕하세요</div>
+          <h1 className="text-[20px] font-extrabold tracking-tight mt-0.5">다임님 👋</h1>
+        </div>
+        <button className="size-10 rounded-full bg-surface border border-border grid place-items-center" aria-label="알림">
+          <Bell className="size-5" />
+        </button>
+      </header>
+
+      <main className="px-5 pt-4 space-y-4">
+        {/* Today nutrition status */}
+        <section className="rounded-3xl p-5 bg-gradient-to-br from-primary to-primary/70 text-primary-foreground shadow-[var(--shadow-soft)]">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-[12px] opacity-80">오늘의 영양 상태</div>
+              <div className="mt-1 text-[22px] font-extrabold">잘 지키고 있어요</div>
+            </div>
+            <div className="text-right">
+              <div className="text-[12px] opacity-80">목표 달성</div>
+              <div className="text-[22px] font-extrabold">72%</div>
+            </div>
+          </div>
+
+          <div className="mt-5 space-y-3">
+            {focus.map((f) => {
+              const pct = Math.min(100, Math.round((f.value / f.max) * 100));
+              return (
+                <div key={f.label}>
+                  <div className="flex justify-between text-[12.5px]">
+                    <span className="opacity-90">{f.label}</span>
+                    <span className="font-medium">
+                      {f.value}/{f.max}{f.unit}
+                    </span>
+                  </div>
+                  <div className="mt-1.5 h-2 rounded-full bg-white/25 overflow-hidden">
+                    <div className="h-full rounded-full bg-white/90" style={{ width: `${pct}%` }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* Focus chips */}
+        <section>
+          <div className="flex items-center justify-between mb-2 px-1">
+            <h2 className="text-[14px] font-bold">집중 관리 성분</h2>
+            <Link to="/my/focus" className="text-[12px] text-muted-foreground flex items-center">
+              편집 <ChevronRight className="size-3.5" />
+            </Link>
+          </div>
+          <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-5 px-5 pb-1">
+            {["당", "나트륨", "카페인", "포화지방", "대체당"].map((t) => (
+              <span key={t} className="shrink-0 h-9 px-4 rounded-full bg-surface border border-border text-[13px] font-medium grid place-items-center">
+                #{t}
+              </span>
+            ))}
+          </div>
+        </section>
+
+        {/* AI coach card */}
+        <section className="rounded-3xl p-5 bg-surface border border-border flex gap-4">
+          <Mascot size={48} />
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-1 text-[11px] font-semibold text-primary">
+              <Sparkles className="size-3" /> AI 코치 한마디
+            </div>
+            <p className="mt-1 text-[14px] leading-relaxed text-foreground">
+              오늘 나트륨이 평소보다 낮아요. 저녁엔 단백질을 챙겨보면 좋아요!
+            </p>
+          </div>
+        </section>
+
+        {/* Today eaten */}
+        <section className="pb-4">
+          <div className="flex items-center justify-between mb-2 px-1">
+            <h2 className="text-[14px] font-bold">오늘 먹은 음식</h2>
+            <Link to="/history" className="text-[12px] text-muted-foreground flex items-center">
+              전체보기 <ChevronRight className="size-3.5" />
+            </Link>
+          </div>
+          <ul className="space-y-2">
+            {eaten.map((e) => {
+              const b = badge[e.status];
+              return (
+                <li key={e.name}>
+                  <Link to="/history/$id" params={{ id: "1" }} className="flex items-center gap-3 p-3.5 rounded-2xl bg-surface border border-border active:bg-muted/40">
+                    <div className="size-12 rounded-xl bg-muted shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[14px] font-semibold truncate">{e.name}</div>
+                      <div className="text-[11.5px] text-muted-foreground">{e.brand} · {e.time}</div>
+                    </div>
+                    <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full ${b.cls}`}>{b.label}</span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      </main>
+
+      <BottomNav />
+    </AppShell>
+  );
+}

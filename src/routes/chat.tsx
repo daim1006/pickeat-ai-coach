@@ -1,0 +1,120 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import { AppShell } from "@/components/AppShell";
+import { BottomNav } from "@/components/BottomNav";
+import { Mascot } from "@/components/Mascot";
+import { Send, Sparkles } from "lucide-react";
+
+export const Route = createFileRoute("/chat")({
+  component: Chat,
+});
+
+const suggestions = [
+  "대체당이 뭐예요?",
+  "이 제품 혈당 관리에 괜찮아요?",
+  "나트륨이 높으면 왜 조심해야 해요?",
+  "단백질 하루 권장량은요?",
+];
+
+interface Msg { role: "user" | "ai"; text: string }
+
+function Chat() {
+  const [messages, setMessages] = useState<Msg[]>([]);
+  const [input, setInput] = useState("");
+
+  const send = (text: string) => {
+    if (!text.trim()) return;
+    setMessages((m) => [
+      ...m,
+      { role: "user", text },
+      { role: "ai", text: "좋은 질문이에요! 잇핏이 곧 답변해 드릴게요. (데모 응답)" },
+    ]);
+    setInput("");
+  };
+
+  return (
+    <AppShell withBottomNav>
+      <header className="px-5 pt-4 pb-3 flex items-center gap-3 border-b border-border">
+        <Mascot size={40} />
+        <div>
+          <div className="text-[15px] font-bold">잇핏 AI 코치</div>
+          <div className="text-[11.5px] text-primary flex items-center gap-1">
+            <span className="size-1.5 rounded-full bg-success" /> 온라인
+          </div>
+        </div>
+      </header>
+
+      <div className="flex-1 px-5 py-5 overflow-y-auto space-y-4">
+        {messages.length === 0 ? (
+          <div className="space-y-5">
+            <div className="flex flex-col items-center text-center gap-3 py-6">
+              <Mascot size={80} />
+              <h2 className="text-[17px] font-extrabold">무엇이든 물어보세요</h2>
+              <p className="text-[13px] text-muted-foreground leading-relaxed">
+                성분, 목표, 대체 제품까지<br />잇핏이 친절히 알려드릴게요
+              </p>
+            </div>
+            <div>
+              <div className="text-[12px] font-semibold text-muted-foreground mb-2 flex items-center gap-1">
+                <Sparkles className="size-3" /> 추천 질문
+              </div>
+              <ul className="space-y-2">
+                {suggestions.map((q) => (
+                  <li key={q}>
+                    <button
+                      onClick={() => send(q)}
+                      className="w-full text-left p-3.5 rounded-2xl bg-surface border border-border text-[13.5px] font-medium active:bg-muted"
+                    >
+                      {q}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        ) : (
+          messages.map((m, i) => (
+            <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"} gap-2`}>
+              {m.role === "ai" && <Mascot size={28} className="mt-1 shrink-0" />}
+              <div
+                className={`max-w-[78%] px-4 py-2.5 rounded-2xl text-[13.5px] leading-relaxed ${
+                  m.role === "user"
+                    ? "bg-primary text-primary-foreground rounded-br-md"
+                    : "bg-surface border border-border rounded-bl-md"
+                }`}
+              >
+                {m.text}
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      <div className="px-4 pb-24 pt-2 sticky bottom-0 bg-gradient-to-t from-background via-background to-background/0">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            send(input);
+          }}
+          className="flex items-center gap-2 p-1.5 rounded-full bg-surface border border-border shadow-[var(--shadow-soft)]"
+        >
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="잇핏에게 물어보세요"
+            className="flex-1 bg-transparent outline-none px-3 text-[14px]"
+          />
+          <button
+            type="submit"
+            aria-label="보내기"
+            className="size-10 rounded-full bg-primary text-primary-foreground grid place-items-center disabled:opacity-50"
+            disabled={!input.trim()}
+          >
+            <Send className="size-4" />
+          </button>
+        </form>
+      </div>
+      <BottomNav />
+    </AppShell>
+  );
+}

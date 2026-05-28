@@ -9,38 +9,362 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as StartRouteImport } from './routes/start'
+import { Route as HomeRouteImport } from './routes/home'
+import { Route as ChatRouteImport } from './routes/chat'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ScanIndexRouteImport } from './routes/scan.index'
+import { Route as MyIndexRouteImport } from './routes/my.index'
+import { Route as HistoryIndexRouteImport } from './routes/history.index'
+import { Route as ScanUploadRouteImport } from './routes/scan.upload'
+import { Route as ScanGuideRouteImport } from './routes/scan.guide'
+import { Route as OnboardingRestrictedRouteImport } from './routes/onboarding.restricted'
+import { Route as OnboardingInfoRouteImport } from './routes/onboarding.info'
+import { Route as OnboardingGoalRouteImport } from './routes/onboarding.goal'
+import { Route as OnboardingFocusRouteImport } from './routes/onboarding.focus'
+import { Route as OnboardingCompleteRouteImport } from './routes/onboarding.complete'
+import { Route as MySubscriptionRouteImport } from './routes/my.subscription'
+import { Route as MyRestrictedRouteImport } from './routes/my.restricted'
+import { Route as MyNotificationsRouteImport } from './routes/my.notifications'
+import { Route as MyGoalRouteImport } from './routes/my.goal'
+import { Route as MyFocusRouteImport } from './routes/my.focus'
+import { Route as MyAccountRouteImport } from './routes/my.account'
+import { Route as HistoryIdRouteImport } from './routes/history.$id'
+import { Route as AnalyzeSavedRouteImport } from './routes/analyze.saved'
+import { Route as AnalyzeResultRouteImport } from './routes/analyze.result'
+import { Route as AnalyzeLoadingRouteImport } from './routes/analyze.loading'
 
+const StartRoute = StartRouteImport.update({
+  id: '/start',
+  path: '/start',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HomeRoute = HomeRouteImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChatRoute = ChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ScanIndexRoute = ScanIndexRouteImport.update({
+  id: '/scan/',
+  path: '/scan/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyIndexRoute = MyIndexRouteImport.update({
+  id: '/my/',
+  path: '/my/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HistoryIndexRoute = HistoryIndexRouteImport.update({
+  id: '/history/',
+  path: '/history/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ScanUploadRoute = ScanUploadRouteImport.update({
+  id: '/scan/upload',
+  path: '/scan/upload',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ScanGuideRoute = ScanGuideRouteImport.update({
+  id: '/scan/guide',
+  path: '/scan/guide',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRestrictedRoute = OnboardingRestrictedRouteImport.update({
+  id: '/onboarding/restricted',
+  path: '/onboarding/restricted',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingInfoRoute = OnboardingInfoRouteImport.update({
+  id: '/onboarding/info',
+  path: '/onboarding/info',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingGoalRoute = OnboardingGoalRouteImport.update({
+  id: '/onboarding/goal',
+  path: '/onboarding/goal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingFocusRoute = OnboardingFocusRouteImport.update({
+  id: '/onboarding/focus',
+  path: '/onboarding/focus',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingCompleteRoute = OnboardingCompleteRouteImport.update({
+  id: '/onboarding/complete',
+  path: '/onboarding/complete',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MySubscriptionRoute = MySubscriptionRouteImport.update({
+  id: '/my/subscription',
+  path: '/my/subscription',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyRestrictedRoute = MyRestrictedRouteImport.update({
+  id: '/my/restricted',
+  path: '/my/restricted',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyNotificationsRoute = MyNotificationsRouteImport.update({
+  id: '/my/notifications',
+  path: '/my/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyGoalRoute = MyGoalRouteImport.update({
+  id: '/my/goal',
+  path: '/my/goal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyFocusRoute = MyFocusRouteImport.update({
+  id: '/my/focus',
+  path: '/my/focus',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyAccountRoute = MyAccountRouteImport.update({
+  id: '/my/account',
+  path: '/my/account',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HistoryIdRoute = HistoryIdRouteImport.update({
+  id: '/history/$id',
+  path: '/history/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnalyzeSavedRoute = AnalyzeSavedRouteImport.update({
+  id: '/analyze/saved',
+  path: '/analyze/saved',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnalyzeResultRoute = AnalyzeResultRouteImport.update({
+  id: '/analyze/result',
+  path: '/analyze/result',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnalyzeLoadingRoute = AnalyzeLoadingRouteImport.update({
+  id: '/analyze/loading',
+  path: '/analyze/loading',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/chat': typeof ChatRoute
+  '/home': typeof HomeRoute
+  '/start': typeof StartRoute
+  '/analyze/loading': typeof AnalyzeLoadingRoute
+  '/analyze/result': typeof AnalyzeResultRoute
+  '/analyze/saved': typeof AnalyzeSavedRoute
+  '/history/$id': typeof HistoryIdRoute
+  '/my/account': typeof MyAccountRoute
+  '/my/focus': typeof MyFocusRoute
+  '/my/goal': typeof MyGoalRoute
+  '/my/notifications': typeof MyNotificationsRoute
+  '/my/restricted': typeof MyRestrictedRoute
+  '/my/subscription': typeof MySubscriptionRoute
+  '/onboarding/complete': typeof OnboardingCompleteRoute
+  '/onboarding/focus': typeof OnboardingFocusRoute
+  '/onboarding/goal': typeof OnboardingGoalRoute
+  '/onboarding/info': typeof OnboardingInfoRoute
+  '/onboarding/restricted': typeof OnboardingRestrictedRoute
+  '/scan/guide': typeof ScanGuideRoute
+  '/scan/upload': typeof ScanUploadRoute
+  '/history/': typeof HistoryIndexRoute
+  '/my/': typeof MyIndexRoute
+  '/scan/': typeof ScanIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/chat': typeof ChatRoute
+  '/home': typeof HomeRoute
+  '/start': typeof StartRoute
+  '/analyze/loading': typeof AnalyzeLoadingRoute
+  '/analyze/result': typeof AnalyzeResultRoute
+  '/analyze/saved': typeof AnalyzeSavedRoute
+  '/history/$id': typeof HistoryIdRoute
+  '/my/account': typeof MyAccountRoute
+  '/my/focus': typeof MyFocusRoute
+  '/my/goal': typeof MyGoalRoute
+  '/my/notifications': typeof MyNotificationsRoute
+  '/my/restricted': typeof MyRestrictedRoute
+  '/my/subscription': typeof MySubscriptionRoute
+  '/onboarding/complete': typeof OnboardingCompleteRoute
+  '/onboarding/focus': typeof OnboardingFocusRoute
+  '/onboarding/goal': typeof OnboardingGoalRoute
+  '/onboarding/info': typeof OnboardingInfoRoute
+  '/onboarding/restricted': typeof OnboardingRestrictedRoute
+  '/scan/guide': typeof ScanGuideRoute
+  '/scan/upload': typeof ScanUploadRoute
+  '/history': typeof HistoryIndexRoute
+  '/my': typeof MyIndexRoute
+  '/scan': typeof ScanIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/chat': typeof ChatRoute
+  '/home': typeof HomeRoute
+  '/start': typeof StartRoute
+  '/analyze/loading': typeof AnalyzeLoadingRoute
+  '/analyze/result': typeof AnalyzeResultRoute
+  '/analyze/saved': typeof AnalyzeSavedRoute
+  '/history/$id': typeof HistoryIdRoute
+  '/my/account': typeof MyAccountRoute
+  '/my/focus': typeof MyFocusRoute
+  '/my/goal': typeof MyGoalRoute
+  '/my/notifications': typeof MyNotificationsRoute
+  '/my/restricted': typeof MyRestrictedRoute
+  '/my/subscription': typeof MySubscriptionRoute
+  '/onboarding/complete': typeof OnboardingCompleteRoute
+  '/onboarding/focus': typeof OnboardingFocusRoute
+  '/onboarding/goal': typeof OnboardingGoalRoute
+  '/onboarding/info': typeof OnboardingInfoRoute
+  '/onboarding/restricted': typeof OnboardingRestrictedRoute
+  '/scan/guide': typeof ScanGuideRoute
+  '/scan/upload': typeof ScanUploadRoute
+  '/history/': typeof HistoryIndexRoute
+  '/my/': typeof MyIndexRoute
+  '/scan/': typeof ScanIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/chat'
+    | '/home'
+    | '/start'
+    | '/analyze/loading'
+    | '/analyze/result'
+    | '/analyze/saved'
+    | '/history/$id'
+    | '/my/account'
+    | '/my/focus'
+    | '/my/goal'
+    | '/my/notifications'
+    | '/my/restricted'
+    | '/my/subscription'
+    | '/onboarding/complete'
+    | '/onboarding/focus'
+    | '/onboarding/goal'
+    | '/onboarding/info'
+    | '/onboarding/restricted'
+    | '/scan/guide'
+    | '/scan/upload'
+    | '/history/'
+    | '/my/'
+    | '/scan/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/chat'
+    | '/home'
+    | '/start'
+    | '/analyze/loading'
+    | '/analyze/result'
+    | '/analyze/saved'
+    | '/history/$id'
+    | '/my/account'
+    | '/my/focus'
+    | '/my/goal'
+    | '/my/notifications'
+    | '/my/restricted'
+    | '/my/subscription'
+    | '/onboarding/complete'
+    | '/onboarding/focus'
+    | '/onboarding/goal'
+    | '/onboarding/info'
+    | '/onboarding/restricted'
+    | '/scan/guide'
+    | '/scan/upload'
+    | '/history'
+    | '/my'
+    | '/scan'
+  id:
+    | '__root__'
+    | '/'
+    | '/chat'
+    | '/home'
+    | '/start'
+    | '/analyze/loading'
+    | '/analyze/result'
+    | '/analyze/saved'
+    | '/history/$id'
+    | '/my/account'
+    | '/my/focus'
+    | '/my/goal'
+    | '/my/notifications'
+    | '/my/restricted'
+    | '/my/subscription'
+    | '/onboarding/complete'
+    | '/onboarding/focus'
+    | '/onboarding/goal'
+    | '/onboarding/info'
+    | '/onboarding/restricted'
+    | '/scan/guide'
+    | '/scan/upload'
+    | '/history/'
+    | '/my/'
+    | '/scan/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ChatRoute: typeof ChatRoute
+  HomeRoute: typeof HomeRoute
+  StartRoute: typeof StartRoute
+  AnalyzeLoadingRoute: typeof AnalyzeLoadingRoute
+  AnalyzeResultRoute: typeof AnalyzeResultRoute
+  AnalyzeSavedRoute: typeof AnalyzeSavedRoute
+  HistoryIdRoute: typeof HistoryIdRoute
+  MyAccountRoute: typeof MyAccountRoute
+  MyFocusRoute: typeof MyFocusRoute
+  MyGoalRoute: typeof MyGoalRoute
+  MyNotificationsRoute: typeof MyNotificationsRoute
+  MyRestrictedRoute: typeof MyRestrictedRoute
+  MySubscriptionRoute: typeof MySubscriptionRoute
+  OnboardingCompleteRoute: typeof OnboardingCompleteRoute
+  OnboardingFocusRoute: typeof OnboardingFocusRoute
+  OnboardingGoalRoute: typeof OnboardingGoalRoute
+  OnboardingInfoRoute: typeof OnboardingInfoRoute
+  OnboardingRestrictedRoute: typeof OnboardingRestrictedRoute
+  ScanGuideRoute: typeof ScanGuideRoute
+  ScanUploadRoute: typeof ScanUploadRoute
+  HistoryIndexRoute: typeof HistoryIndexRoute
+  MyIndexRoute: typeof MyIndexRoute
+  ScanIndexRoute: typeof ScanIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/start': {
+      id: '/start'
+      path: '/start'
+      fullPath: '/start'
+      preLoaderRoute: typeof StartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/home': {
+      id: '/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof HomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chat': {
+      id: '/chat'
+      path: '/chat'
+      fullPath: '/chat'
+      preLoaderRoute: typeof ChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +372,175 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/scan/': {
+      id: '/scan/'
+      path: '/scan'
+      fullPath: '/scan/'
+      preLoaderRoute: typeof ScanIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my/': {
+      id: '/my/'
+      path: '/my'
+      fullPath: '/my/'
+      preLoaderRoute: typeof MyIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/history/': {
+      id: '/history/'
+      path: '/history'
+      fullPath: '/history/'
+      preLoaderRoute: typeof HistoryIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/scan/upload': {
+      id: '/scan/upload'
+      path: '/scan/upload'
+      fullPath: '/scan/upload'
+      preLoaderRoute: typeof ScanUploadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/scan/guide': {
+      id: '/scan/guide'
+      path: '/scan/guide'
+      fullPath: '/scan/guide'
+      preLoaderRoute: typeof ScanGuideRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding/restricted': {
+      id: '/onboarding/restricted'
+      path: '/onboarding/restricted'
+      fullPath: '/onboarding/restricted'
+      preLoaderRoute: typeof OnboardingRestrictedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding/info': {
+      id: '/onboarding/info'
+      path: '/onboarding/info'
+      fullPath: '/onboarding/info'
+      preLoaderRoute: typeof OnboardingInfoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding/goal': {
+      id: '/onboarding/goal'
+      path: '/onboarding/goal'
+      fullPath: '/onboarding/goal'
+      preLoaderRoute: typeof OnboardingGoalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding/focus': {
+      id: '/onboarding/focus'
+      path: '/onboarding/focus'
+      fullPath: '/onboarding/focus'
+      preLoaderRoute: typeof OnboardingFocusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding/complete': {
+      id: '/onboarding/complete'
+      path: '/onboarding/complete'
+      fullPath: '/onboarding/complete'
+      preLoaderRoute: typeof OnboardingCompleteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my/subscription': {
+      id: '/my/subscription'
+      path: '/my/subscription'
+      fullPath: '/my/subscription'
+      preLoaderRoute: typeof MySubscriptionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my/restricted': {
+      id: '/my/restricted'
+      path: '/my/restricted'
+      fullPath: '/my/restricted'
+      preLoaderRoute: typeof MyRestrictedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my/notifications': {
+      id: '/my/notifications'
+      path: '/my/notifications'
+      fullPath: '/my/notifications'
+      preLoaderRoute: typeof MyNotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my/goal': {
+      id: '/my/goal'
+      path: '/my/goal'
+      fullPath: '/my/goal'
+      preLoaderRoute: typeof MyGoalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my/focus': {
+      id: '/my/focus'
+      path: '/my/focus'
+      fullPath: '/my/focus'
+      preLoaderRoute: typeof MyFocusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my/account': {
+      id: '/my/account'
+      path: '/my/account'
+      fullPath: '/my/account'
+      preLoaderRoute: typeof MyAccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/history/$id': {
+      id: '/history/$id'
+      path: '/history/$id'
+      fullPath: '/history/$id'
+      preLoaderRoute: typeof HistoryIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/analyze/saved': {
+      id: '/analyze/saved'
+      path: '/analyze/saved'
+      fullPath: '/analyze/saved'
+      preLoaderRoute: typeof AnalyzeSavedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/analyze/result': {
+      id: '/analyze/result'
+      path: '/analyze/result'
+      fullPath: '/analyze/result'
+      preLoaderRoute: typeof AnalyzeResultRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/analyze/loading': {
+      id: '/analyze/loading'
+      path: '/analyze/loading'
+      fullPath: '/analyze/loading'
+      preLoaderRoute: typeof AnalyzeLoadingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ChatRoute: ChatRoute,
+  HomeRoute: HomeRoute,
+  StartRoute: StartRoute,
+  AnalyzeLoadingRoute: AnalyzeLoadingRoute,
+  AnalyzeResultRoute: AnalyzeResultRoute,
+  AnalyzeSavedRoute: AnalyzeSavedRoute,
+  HistoryIdRoute: HistoryIdRoute,
+  MyAccountRoute: MyAccountRoute,
+  MyFocusRoute: MyFocusRoute,
+  MyGoalRoute: MyGoalRoute,
+  MyNotificationsRoute: MyNotificationsRoute,
+  MyRestrictedRoute: MyRestrictedRoute,
+  MySubscriptionRoute: MySubscriptionRoute,
+  OnboardingCompleteRoute: OnboardingCompleteRoute,
+  OnboardingFocusRoute: OnboardingFocusRoute,
+  OnboardingGoalRoute: OnboardingGoalRoute,
+  OnboardingInfoRoute: OnboardingInfoRoute,
+  OnboardingRestrictedRoute: OnboardingRestrictedRoute,
+  ScanGuideRoute: ScanGuideRoute,
+  ScanUploadRoute: ScanUploadRoute,
+  HistoryIndexRoute: HistoryIndexRoute,
+  MyIndexRoute: MyIndexRoute,
+  ScanIndexRoute: ScanIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
