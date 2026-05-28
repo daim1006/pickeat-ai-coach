@@ -3,7 +3,7 @@ import { useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { TopBar } from "@/components/TopBar";
 import { cn } from "@/lib/utils";
-import { Plus } from "lucide-react";
+import { Plus, X } from "lucide-react";
 
 export const Route = createFileRoute("/onboarding/restricted")({
   component: OnbRestricted,
@@ -13,8 +13,22 @@ const items = ["유제품", "견과류", "갑각류", "글루텐", "계란", "�
 
 function OnbRestricted() {
   const [sel, setSel] = useState<string[]>([]);
+  const [custom, setCustom] = useState<string[]>([]);
+  const [showInput, setShowInput] = useState(false);
+  const [text, setText] = useState("");
+
   const toggle = (v: string) =>
     setSel((p) => (p.includes(v) ? p.filter((x) => x !== v) : [...p, v]));
+
+  const addCustom = () => {
+    const v = text.trim();
+    if (!v) return;
+    if (!custom.includes(v)) setCustom((p) => [...p, v]);
+    setText("");
+  };
+
+  const removeCustom = (v: string) =>
+    setCustom((p) => p.filter((x) => x !== v));
 
   return (
     <AppShell>
@@ -45,10 +59,60 @@ function OnbRestricted() {
               </button>
             );
           })}
-          <button className="h-16 rounded-2xl text-[13px] font-medium border border-dashed border-border text-muted-foreground flex items-center justify-center gap-1">
+          <button
+            onClick={() => setShowInput((v) => !v)}
+            className={cn(
+              "h-16 rounded-2xl text-[13px] font-medium border border-dashed flex items-center justify-center gap-1",
+              showInput
+                ? "border-destructive text-destructive"
+                : "border-border text-muted-foreground"
+            )}
+          >
             <Plus className="size-4" /> 직접 입력
           </button>
         </div>
+
+        {showInput && (
+          <div className="mt-4 rounded-2xl border border-border bg-surface p-3">
+            <label className="text-[13px] font-semibold text-foreground">
+              직접 입력
+            </label>
+            <div className="mt-2 flex gap-2">
+              <input
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addCustom();
+                  }
+                }}
+                placeholder="예: 복숭아, 땅콩, 아스파탐"
+                className="flex-1 h-11 px-3 rounded-xl border border-border bg-background text-[14px] outline-none focus:border-destructive"
+              />
+              <button
+                onClick={addCustom}
+                className="h-11 px-4 rounded-xl bg-destructive text-destructive-foreground text-[14px] font-semibold"
+              >
+                추가
+              </button>
+            </div>
+            {custom.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {custom.map((c) => (
+                  <button
+                    key={c}
+                    onClick={() => removeCustom(c)}
+                    className="inline-flex items-center gap-1 h-9 px-3 rounded-full text-[13px] font-semibold bg-destructive/10 text-destructive border border-destructive"
+                  >
+                    {c}
+                    <X className="size-3.5" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="flex-1" />
         <div className="space-y-2">
