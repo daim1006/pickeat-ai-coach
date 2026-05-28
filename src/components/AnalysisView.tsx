@@ -170,41 +170,16 @@ function Chip({ children, tone }: { children: React.ReactNode; tone?: "warn" }) 
   );
 }
 
-function NutriRow({
-  icon,
-  label,
-  value,
-  status,
-  tone,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-  status: string;
-  tone: "ok" | "warn";
-}) {
+function StatusBadge({ children, tone }: { children: React.ReactNode; tone: "ok" | "warn" }) {
   return (
-    <li className="flex items-center gap-3 py-2.5 first:pt-0 last:pb-0">
-      <div
-        className={cn(
-          "size-8 rounded-full grid place-items-center shrink-0",
-          tone === "ok" ? "bg-success/15 text-success" : "bg-warning/20 text-warning-foreground"
-        )}
-      >
-        {icon}
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="text-[13.5px] font-semibold">{label}</div>
-        <div className="text-[11.5px] text-muted-foreground">{value}</div>
-      </div>
-      <span
-        className={cn(
-          "text-[11.5px] font-semibold px-2.5 py-1 rounded-full",
-          tone === "ok" ? "bg-success/15 text-success" : "bg-warning/20 text-warning-foreground"
-        )}
-      >
-        {status}
-      </span>
-    </li>
+    <span
+      className={cn(
+        "text-[11px] font-semibold px-2 py-0.5 rounded-full",
+        tone === "ok" ? "bg-success/15 text-success" : "bg-warning/20 text-warning-foreground"
+      )}
+    >
+      {children}
+    </span>
   );
 }
+
