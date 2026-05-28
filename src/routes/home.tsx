@@ -143,7 +143,7 @@ function Home() {
             </Link>
           </div>
           <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-5 px-5 pb-1">
-            {["당", "나트륨", "카페인", "포화지방", "대체당"].map((t) => (
+            {chips.map((t) => (
               <span key={t} className="shrink-0 h-9 px-4 rounded-full bg-surface border border-border text-[13px] font-medium grid place-items-center">
                 #{t}
               </span>
