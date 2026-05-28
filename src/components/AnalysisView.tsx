@@ -1,6 +1,7 @@
-import { AlertTriangle, Sparkles, Leaf, Coffee, Droplet, FlaskConical, ArrowRight } from "lucide-react";
+import { Sparkles, ArrowRight } from "lucide-react";
 import { Mascot } from "@/components/Mascot";
 import { cn } from "@/lib/utils";
+
 
 type Verdict = "ok" | "warn" | "bad";
 
