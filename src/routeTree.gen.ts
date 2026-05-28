@@ -11,8 +11,10 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as StartRouteImport } from './routes/start'
 import { Route as HomeRouteImport } from './routes/home'
+import { Route as ChatRouteImport } from './routes/chat'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ScanIndexRouteImport } from './routes/scan.index'
+import { Route as HistoryIndexRouteImport } from './routes/history.index'
 import { Route as ScanUploadRouteImport } from './routes/scan.upload'
 import { Route as ScanGuideRouteImport } from './routes/scan.guide'
 import { Route as OnboardingRestrictedRouteImport } from './routes/onboarding.restricted'
@@ -20,6 +22,7 @@ import { Route as OnboardingInfoRouteImport } from './routes/onboarding.info'
 import { Route as OnboardingGoalRouteImport } from './routes/onboarding.goal'
 import { Route as OnboardingFocusRouteImport } from './routes/onboarding.focus'
 import { Route as OnboardingCompleteRouteImport } from './routes/onboarding.complete'
+import { Route as HistoryIdRouteImport } from './routes/history.$id'
 import { Route as AnalyzeSavedRouteImport } from './routes/analyze.saved'
 import { Route as AnalyzeResultRouteImport } from './routes/analyze.result'
 import { Route as AnalyzeLoadingRouteImport } from './routes/analyze.loading'
@@ -34,6 +37,11 @@ const HomeRoute = HomeRouteImport.update({
   path: '/home',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ChatRoute = ChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -42,6 +50,11 @@ const IndexRoute = IndexRouteImport.update({
 const ScanIndexRoute = ScanIndexRouteImport.update({
   id: '/scan/',
   path: '/scan/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HistoryIndexRoute = HistoryIndexRouteImport.update({
+  id: '/history/',
+  path: '/history/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ScanUploadRoute = ScanUploadRouteImport.update({
@@ -79,6 +92,11 @@ const OnboardingCompleteRoute = OnboardingCompleteRouteImport.update({
   path: '/onboarding/complete',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HistoryIdRoute = HistoryIdRouteImport.update({
+  id: '/history/$id',
+  path: '/history/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AnalyzeSavedRoute = AnalyzeSavedRouteImport.update({
   id: '/analyze/saved',
   path: '/analyze/saved',
@@ -97,11 +115,13 @@ const AnalyzeLoadingRoute = AnalyzeLoadingRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/chat': typeof ChatRoute
   '/home': typeof HomeRoute
   '/start': typeof StartRoute
   '/analyze/loading': typeof AnalyzeLoadingRoute
   '/analyze/result': typeof AnalyzeResultRoute
   '/analyze/saved': typeof AnalyzeSavedRoute
+  '/history/$id': typeof HistoryIdRoute
   '/onboarding/complete': typeof OnboardingCompleteRoute
   '/onboarding/focus': typeof OnboardingFocusRoute
   '/onboarding/goal': typeof OnboardingGoalRoute
@@ -109,15 +129,18 @@ export interface FileRoutesByFullPath {
   '/onboarding/restricted': typeof OnboardingRestrictedRoute
   '/scan/guide': typeof ScanGuideRoute
   '/scan/upload': typeof ScanUploadRoute
+  '/history/': typeof HistoryIndexRoute
   '/scan/': typeof ScanIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/chat': typeof ChatRoute
   '/home': typeof HomeRoute
   '/start': typeof StartRoute
   '/analyze/loading': typeof AnalyzeLoadingRoute
   '/analyze/result': typeof AnalyzeResultRoute
   '/analyze/saved': typeof AnalyzeSavedRoute
+  '/history/$id': typeof HistoryIdRoute
   '/onboarding/complete': typeof OnboardingCompleteRoute
   '/onboarding/focus': typeof OnboardingFocusRoute
   '/onboarding/goal': typeof OnboardingGoalRoute
@@ -125,16 +148,19 @@ export interface FileRoutesByTo {
   '/onboarding/restricted': typeof OnboardingRestrictedRoute
   '/scan/guide': typeof ScanGuideRoute
   '/scan/upload': typeof ScanUploadRoute
+  '/history': typeof HistoryIndexRoute
   '/scan': typeof ScanIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/chat': typeof ChatRoute
   '/home': typeof HomeRoute
   '/start': typeof StartRoute
   '/analyze/loading': typeof AnalyzeLoadingRoute
   '/analyze/result': typeof AnalyzeResultRoute
   '/analyze/saved': typeof AnalyzeSavedRoute
+  '/history/$id': typeof HistoryIdRoute
   '/onboarding/complete': typeof OnboardingCompleteRoute
   '/onboarding/focus': typeof OnboardingFocusRoute
   '/onboarding/goal': typeof OnboardingGoalRoute
@@ -142,17 +168,20 @@ export interface FileRoutesById {
   '/onboarding/restricted': typeof OnboardingRestrictedRoute
   '/scan/guide': typeof ScanGuideRoute
   '/scan/upload': typeof ScanUploadRoute
+  '/history/': typeof HistoryIndexRoute
   '/scan/': typeof ScanIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/chat'
     | '/home'
     | '/start'
     | '/analyze/loading'
     | '/analyze/result'
     | '/analyze/saved'
+    | '/history/$id'
     | '/onboarding/complete'
     | '/onboarding/focus'
     | '/onboarding/goal'
@@ -160,15 +189,18 @@ export interface FileRouteTypes {
     | '/onboarding/restricted'
     | '/scan/guide'
     | '/scan/upload'
+    | '/history/'
     | '/scan/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/chat'
     | '/home'
     | '/start'
     | '/analyze/loading'
     | '/analyze/result'
     | '/analyze/saved'
+    | '/history/$id'
     | '/onboarding/complete'
     | '/onboarding/focus'
     | '/onboarding/goal'
@@ -176,15 +208,18 @@ export interface FileRouteTypes {
     | '/onboarding/restricted'
     | '/scan/guide'
     | '/scan/upload'
+    | '/history'
     | '/scan'
   id:
     | '__root__'
     | '/'
+    | '/chat'
     | '/home'
     | '/start'
     | '/analyze/loading'
     | '/analyze/result'
     | '/analyze/saved'
+    | '/history/$id'
     | '/onboarding/complete'
     | '/onboarding/focus'
     | '/onboarding/goal'
@@ -192,16 +227,19 @@ export interface FileRouteTypes {
     | '/onboarding/restricted'
     | '/scan/guide'
     | '/scan/upload'
+    | '/history/'
     | '/scan/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ChatRoute: typeof ChatRoute
   HomeRoute: typeof HomeRoute
   StartRoute: typeof StartRoute
   AnalyzeLoadingRoute: typeof AnalyzeLoadingRoute
   AnalyzeResultRoute: typeof AnalyzeResultRoute
   AnalyzeSavedRoute: typeof AnalyzeSavedRoute
+  HistoryIdRoute: typeof HistoryIdRoute
   OnboardingCompleteRoute: typeof OnboardingCompleteRoute
   OnboardingFocusRoute: typeof OnboardingFocusRoute
   OnboardingGoalRoute: typeof OnboardingGoalRoute
@@ -209,6 +247,7 @@ export interface RootRouteChildren {
   OnboardingRestrictedRoute: typeof OnboardingRestrictedRoute
   ScanGuideRoute: typeof ScanGuideRoute
   ScanUploadRoute: typeof ScanUploadRoute
+  HistoryIndexRoute: typeof HistoryIndexRoute
   ScanIndexRoute: typeof ScanIndexRoute
 }
 
@@ -228,6 +267,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HomeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/chat': {
+      id: '/chat'
+      path: '/chat'
+      fullPath: '/chat'
+      preLoaderRoute: typeof ChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -240,6 +286,13 @@ declare module '@tanstack/react-router' {
       path: '/scan'
       fullPath: '/scan/'
       preLoaderRoute: typeof ScanIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/history/': {
+      id: '/history/'
+      path: '/history'
+      fullPath: '/history/'
+      preLoaderRoute: typeof HistoryIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/scan/upload': {
@@ -291,6 +344,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingCompleteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/history/$id': {
+      id: '/history/$id'
+      path: '/history/$id'
+      fullPath: '/history/$id'
+      preLoaderRoute: typeof HistoryIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/analyze/saved': {
       id: '/analyze/saved'
       path: '/analyze/saved'
@@ -317,11 +377,13 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ChatRoute: ChatRoute,
   HomeRoute: HomeRoute,
   StartRoute: StartRoute,
   AnalyzeLoadingRoute: AnalyzeLoadingRoute,
   AnalyzeResultRoute: AnalyzeResultRoute,
   AnalyzeSavedRoute: AnalyzeSavedRoute,
+  HistoryIdRoute: HistoryIdRoute,
   OnboardingCompleteRoute: OnboardingCompleteRoute,
   OnboardingFocusRoute: OnboardingFocusRoute,
   OnboardingGoalRoute: OnboardingGoalRoute,
@@ -329,6 +391,7 @@ const rootRouteChildren: RootRouteChildren = {
   OnboardingRestrictedRoute: OnboardingRestrictedRoute,
   ScanGuideRoute: ScanGuideRoute,
   ScanUploadRoute: ScanUploadRoute,
+  HistoryIndexRoute: HistoryIndexRoute,
   ScanIndexRoute: ScanIndexRoute,
 }
 export const routeTree = rootRouteImport
