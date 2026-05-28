@@ -82,56 +82,87 @@ function Home() {
 
       <main className="px-5 pt-4 space-y-4">
         {/* Today nutrition status */}
-        <section className="rounded-3xl p-5 bg-gradient-to-br from-primary to-primary/70 text-primary-foreground shadow-[var(--shadow-soft)]">
+        <section className="rounded-3xl p-5 bg-surface border border-border shadow-[var(--shadow-soft)]">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-[12px] opacity-80">오늘의 영양 상태</div>
-              <div className="mt-1 text-[22px] font-extrabold">잘 지키고 있어요</div>
+              <div className="text-[12px] text-muted-foreground">오늘의 영양 상태</div>
+              <div className="mt-1 text-[18px] font-extrabold">잘 지키고 있어요</div>
             </div>
             <div className="text-right">
-              <div className="text-[12px] opacity-80">목표 달성</div>
-              <div className="text-[22px] font-extrabold">72%</div>
+              <div className="text-[12px] text-muted-foreground">목표 달성</div>
+              <div className="text-[18px] font-extrabold text-primary">72%</div>
             </div>
           </div>
 
-          <div className="mt-5 space-y-3">
-            {focus.map((f) => {
-              if (f.kind === "detect") {
-                return (
-                  <div key={f.label}>
-                    <div className="flex justify-between items-center text-[12.5px]">
-                      <span className="opacity-90">{f.label}</span>
-                      <span className="font-semibold text-[11px] px-2 py-0.5 rounded-full bg-white/20">
-                        {f.detected ? "감지됨" : "없음"}
-                      </span>
+          <div className="mt-4 grid grid-cols-3 gap-2">
+            {focus.filter((f) => f.kind === "numeric").slice(0, 3).map((f) => {
+              const n = f as NumericFocus;
+              const remaining = n.max - n.value;
+              const exceeded = remaining < 0;
+              const ratio = n.value / n.max;
+              const remainRatio = Math.max(0, Math.min(1, 1 - ratio));
+              const fillPct = exceeded ? 100 : Math.round(remainRatio * 100);
+              const color = exceeded
+                ? "hsl(var(--destructive))"
+                : remainRatio > 0.3
+                ? "hsl(var(--success))"
+                : "hsl(var(--warning))";
+              const textColor = exceeded
+                ? "text-destructive"
+                : remainRatio > 0.3
+                ? "text-success"
+                : "text-warning-foreground";
+              const R = 28;
+              const C = 2 * Math.PI * R;
+              const dash = (fillPct / 100) * C;
+              return (
+                <div key={n.label} className="flex flex-col items-center">
+                  <div className="relative size-[72px]">
+                    <svg viewBox="0 0 72 72" className="size-[72px] -rotate-90">
+                      <circle cx="36" cy="36" r={R} fill="none" stroke="hsl(var(--muted))" strokeWidth="6" />
+                      <circle
+                        cx="36" cy="36" r={R}
+                        fill="none" stroke={color} strokeWidth="6" strokeLinecap="round"
+                        strokeDasharray={`${dash} ${C}`}
+                      />
+                    </svg>
+                    <div className="absolute inset-0 grid place-items-center text-center">
+                      <div>
+                        <div className="text-[9px] text-muted-foreground leading-none">
+                          {exceeded ? "초과" : "잔여량"}
+                        </div>
+                        <div className={`text-[13px] font-extrabold leading-tight mt-0.5 ${textColor}`}>
+                          {exceeded ? `+${Math.abs(remaining)}${n.unit}` : `${remaining}${n.unit}`}
+                        </div>
+                      </div>
                     </div>
                   </div>
-                );
-              }
-              const pct = Math.min(100, Math.round((f.value / f.max) * 100));
-              const ratio = f.value / f.max;
-              const barCls =
-                ratio > 1
-                  ? "bg-destructive"
-                  : ratio >= 0.7
-                  ? "bg-warning"
-                  : "bg-white/90";
-              return (
-                <div key={f.label}>
-                  <div className="flex justify-between text-[12.5px]">
-                    <span className="opacity-90">{f.label}</span>
-                    <span className="font-medium">
-                      {f.value}/{f.max}{f.unit}
-                    </span>
-                  </div>
-                  <div className="mt-1.5 h-2 rounded-full bg-white/25 overflow-hidden">
-                    <div className={`h-full rounded-full ${barCls}`} style={{ width: `${pct}%` }} />
+                  <div className="mt-1.5 text-[11px] text-center">
+                    <span className="font-semibold">{n.label}</span>{" "}
+                    <span className="text-muted-foreground">{n.value}/{n.max}{n.unit}</span>
                   </div>
                 </div>
               );
             })}
           </div>
 
+          {focus.some((f) => f.kind === "detect") && (
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              {focus.filter((f) => f.kind === "detect").map((f) => {
+                const d = f as DetectFocus;
+                return (
+                  <span
+                    key={d.label}
+                    className={`text-[11px] font-semibold px-2.5 py-1 rounded-full ${
+                      d.detected ? "bg-warning/15 text-warning-foreground" : "bg-success/15 text-success"
+                    }`}
+                  >
+                    {d.label} · {d.detected ? "감지됨" : "없음"}
+                  </span>
+                );
+              })}
+            </div>
+          )}
         </section>
 
         {/* Focus chips */}
