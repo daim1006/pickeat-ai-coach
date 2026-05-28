@@ -1,6 +1,7 @@
-import { AlertTriangle, Sparkles, Leaf, Coffee, Droplet, FlaskConical, ArrowRight } from "lucide-react";
+import { Sparkles, ArrowRight } from "lucide-react";
 import { Mascot } from "@/components/Mascot";
 import { cn } from "@/lib/utils";
+
 
 type Verdict = "ok" | "warn" | "bad";
 
@@ -58,34 +59,71 @@ export function AnalysisView({ verdict = "warn" }: AnalysisViewProps) {
         </div>
       </section>
 
-      {/* Compact nutrition summary */}
+      {/* Scanned nutrition facts table */}
       <section className="rounded-3xl p-5 bg-surface border border-border">
-        <div className="flex items-center justify-between">
-          <h3 className="text-[14px] font-bold">영양 요약</h3>
-          <span className="text-[11px] text-muted-foreground">500ml 기준</span>
+        <h3 className="text-[14px] font-bold">스캔한 영양성분표</h3>
+        <p className="mt-1 text-[12px] text-muted-foreground">잇핏이 성분표를 이렇게 읽었어요</p>
+
+        <div className="mt-3 rounded-2xl border border-border/70 overflow-hidden">
+          <div className="grid grid-cols-[1.2fr_1fr_0.9fr] px-3.5 py-2 bg-muted/50 text-[11px] font-semibold text-muted-foreground">
+            <span>성분</span>
+            <span>함량</span>
+            <span className="text-right">판정</span>
+          </div>
+          <ul className="divide-y divide-border/60">
+            {[
+              { n: "당류", v: "0g", s: "낮음", t: "ok" as const },
+              { n: "나트륨", v: "45mg", s: "낮음", t: "ok" as const },
+              { n: "카페인", v: "34mg", s: "주의", t: "warn" as const },
+              { n: "대체당", v: "포함", s: "확인 필요", t: "warn" as const },
+            ].map((r) => (
+              <li key={r.n} className="grid grid-cols-[1.2fr_1fr_0.9fr] items-center px-3.5 py-2.5">
+                <span className="text-[13px] font-semibold">{r.n}</span>
+                <span className="text-[13px] text-muted-foreground">{r.v}</span>
+                <span className="justify-self-end">
+                  <StatusBadge tone={r.t}>{r.s}</StatusBadge>
+                </span>
+              </li>
+            ))}
+          </ul>
         </div>
-        <ul className="mt-3 divide-y divide-border/70">
-          <NutriRow icon={<Droplet className="size-4" />} label="당류" value="0g" status="낮음" tone="ok" />
-          <NutriRow icon={<Leaf className="size-4" />} label="나트륨" value="45mg" status="낮음" tone="ok" />
-          <NutriRow icon={<Coffee className="size-4" />} label="카페인" value="34mg" status="주의" tone="warn" />
-          <NutriRow icon={<FlaskConical className="size-4" />} label="대체당" value="포함" status="확인 필요" tone="warn" />
-        </ul>
       </section>
 
-      {/* Ingredient / alt sweetener analysis */}
+      {/* Ingredient analysis */}
       <section className="rounded-3xl p-5 bg-surface border border-border">
-        <div className="flex items-center gap-1.5">
-          <FlaskConical className="size-4 text-primary" />
-          <h3 className="text-[14px] font-bold">원재료·대체당 분석</h3>
+        <h3 className="text-[14px] font-bold">원재료명 분석</h3>
+        <p className="mt-1 text-[12px] text-muted-foreground">원재료명에서 주의할 성분만 골라 정리했어요</p>
+
+        <div className="mt-3 rounded-2xl bg-muted/50 px-3.5 py-3">
+          <div className="text-[10.5px] font-semibold text-muted-foreground mb-1">원재료명</div>
+          <p className="text-[12.5px] leading-relaxed text-foreground/80">
+            정제수, 이산화탄소, 카라멜색소, 인산, 카페인, 아세설팜칼륨, 수크랄로스
+          </p>
         </div>
-        <div className="mt-3 flex flex-wrap gap-1.5">
-          <Chip tone="warn">아세설팜칼륨</Chip>
-          <Chip tone="warn">대체당</Chip>
+
+        <div className="mt-3 rounded-2xl border border-border/70 overflow-hidden">
+          <div className="grid grid-cols-[0.9fr_0.8fr_1.3fr] px-3.5 py-2 bg-muted/50 text-[11px] font-semibold text-muted-foreground">
+            <span>성분</span>
+            <span>분류</span>
+            <span>잇핏 해석</span>
+          </div>
+          <ul className="divide-y divide-border/60">
+            {[
+              { n: "아세설팜칼륨", c: "대체당", i: "단맛을 내는 감미료예요" },
+              { n: "수크랄로스", c: "대체당", i: "과다 섭취 시 장이 예민할 수 있어요" },
+              { n: "카페인", c: "각성 성분", i: "민감하면 오후 섭취를 줄여요" },
+              { n: "인산", c: "첨가물", i: "과다 섭취는 주의가 필요해요" },
+            ].map((r) => (
+              <li key={r.n} className="grid grid-cols-[0.9fr_0.8fr_1.3fr] items-start gap-2 px-3.5 py-2.5">
+                <span className="text-[12.5px] font-semibold">{r.n}</span>
+                <span className="text-[11.5px] text-muted-foreground pt-0.5">{r.c}</span>
+                <span className="text-[12px] text-foreground/80 leading-snug">{r.i}</span>
+              </li>
+            ))}
+          </ul>
         </div>
-        <p className="mt-3 text-[13px] leading-relaxed text-muted-foreground">
-          단맛을 내는 감미료예요. 카페인에 민감하거나 장이 예민하다면 섭취량을 조절해보세요.
-        </p>
       </section>
+
 
       {/* Alternative product recommendation */}
       <section className="rounded-3xl p-5 bg-gradient-to-br from-secondary/40 to-primary-soft border border-border">
@@ -132,41 +170,16 @@ function Chip({ children, tone }: { children: React.ReactNode; tone?: "warn" }) 
   );
 }
 
-function NutriRow({
-  icon,
-  label,
-  value,
-  status,
-  tone,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-  status: string;
-  tone: "ok" | "warn";
-}) {
+function StatusBadge({ children, tone }: { children: React.ReactNode; tone: "ok" | "warn" }) {
   return (
-    <li className="flex items-center gap-3 py-2.5 first:pt-0 last:pb-0">
-      <div
-        className={cn(
-          "size-8 rounded-full grid place-items-center shrink-0",
-          tone === "ok" ? "bg-success/15 text-success" : "bg-warning/20 text-warning-foreground"
-        )}
-      >
-        {icon}
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="text-[13.5px] font-semibold">{label}</div>
-        <div className="text-[11.5px] text-muted-foreground">{value}</div>
-      </div>
-      <span
-        className={cn(
-          "text-[11.5px] font-semibold px-2.5 py-1 rounded-full",
-          tone === "ok" ? "bg-success/15 text-success" : "bg-warning/20 text-warning-foreground"
-        )}
-      >
-        {status}
-      </span>
-    </li>
+    <span
+      className={cn(
+        "text-[11px] font-semibold px-2 py-0.5 rounded-full",
+        tone === "ok" ? "bg-success/15 text-success" : "bg-warning/20 text-warning-foreground"
+      )}
+    >
+      {children}
+    </span>
   );
 }
+
