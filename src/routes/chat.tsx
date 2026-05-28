@@ -129,7 +129,7 @@ function Chat() {
             type="submit"
             aria-label="보내기"
             className="size-10 rounded-full bg-primary text-primary-foreground grid place-items-center disabled:opacity-50"
-            disabled={!input.trim()}
+            disabled={!input.trim() || sending}
           >
             <Send className="size-4" />
           </button>
