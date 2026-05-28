@@ -97,10 +97,47 @@ function History() {
   const [period, setPeriod] = useState<Period>("전체 기간");
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
+  const [remote, setRemote] = useState<Item[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await inquireHistory<unknown>({});
+        const arr = Array.isArray(res)
+          ? res
+          : Array.isArray((res as { items?: unknown })?.items)
+            ? ((res as { items: unknown[] }).items)
+            : [];
+        const items: Item[] = arr
+          .map((r, i) => {
+            const o = (r ?? {}) as Record<string, unknown>;
+            const rawDate = o.date ?? o.createdAt ?? o.timestamp;
+            const d = rawDate ? new Date(rawDate as string) : new Date();
+            if (isNaN(d.getTime())) return null;
+            const status = (o.status as Item["status"]) ?? "ok";
+            return {
+              id: String(o.id ?? `r-${i}`),
+              name: String(o.name ?? "기록"),
+              brand: String(o.brand ?? ""),
+              status,
+              date: d,
+            } satisfies Item;
+          })
+          .filter((x): x is Item => x !== null);
+        if (!cancelled) setRemote(items);
+      } catch {
+        // ignore network errors, keep demo data
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const filtered = useMemo(() => {
     const now = new Date();
-    let list = [...data].sort((a, b) => b.date.getTime() - a.date.getTime());
+    let list = [...data, ...remote].sort((a, b) => b.date.getTime() - a.date.getTime());
 
     if (tab === "오늘") {
       list = list.filter((d) => isSameDay(d.date, now));
