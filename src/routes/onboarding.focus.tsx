@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { TopBar } from "@/components/TopBar";
 import { cn } from "@/lib/utils";
@@ -9,11 +9,11 @@ export const Route = createFileRoute("/onboarding/focus")({
   component: OnbFocus,
 });
 
-type NumericKey = "당류" | "나트륨" | "포화지방" | "카페인";
+type NumericKey = "당류" | "나트륨" | "포화지방" | "카페인" | "단백질";
 type DetectKey = "대체당" | "첨가물";
 type Key = NumericKey | DetectKey;
 
-const items: Key[] = ["당류", "나트륨", "카페인", "포화지방", "대체당", "첨가물"];
+const items: Key[] = ["당류", "나트륨", "카페인", "포화지방", "단백질", "대체당", "첨가물"];
 
 type NumericCfg = {
   kind: "numeric";
@@ -37,15 +37,38 @@ const config: Record<Key, NumericCfg | DetectCfg> = {
   나트륨: { kind: "numeric", label: "나트륨 목표량", unit: "mg", step: 100, min: 500, max: 3000, defaultValue: 1500, note: "기준 권장량 2000mg · 나트륨 줄이기 목표에 맞춰 낮게 설정했어요." },
   포화지방: { kind: "numeric", label: "포화지방 목표량", unit: "g", step: 1, min: 3, max: 30, defaultValue: 10, note: "기준 권장량 15g · 체중 관리 목표에 맞춰 낮게 설정했어요." },
   카페인: { kind: "numeric", label: "카페인 목표량", unit: "mg", step: 25, min: 50, max: 500, defaultValue: 300, note: "카페인 민감도에 따라 조절할 수 있어요." },
+  단백질: { kind: "numeric", label: "단백질 목표량", unit: "g", step: 5, min: 30, max: 200, defaultValue: 70, note: "단백질 중심 목표에 맞춰 충분히 설정했어요." },
   대체당: { kind: "detect", label: "대체당 관리 방식", body: "원재료명에서 대체당을 감지하면 알려드려요.", note: "예: 아세설팜칼륨, 수크랄로스, 아스파탐" },
   첨가물: { kind: "detect", label: "첨가물 관리 방식", body: "원재료명에서 주의 첨가물을 감지하면 알려드려요.", note: "기준값이 아닌 성분 감지 중심으로 관리해요." },
 };
 
+const defaultValues: Record<string, number> = {
+  당류: 70, 나트륨: 1500, 포화지방: 10, 카페인: 300, 단백질: 70,
+};
+
 function OnbFocus() {
   const [sel, setSel] = useState<Key[]>(["당류", "나트륨"]);
-  const [values, setValues] = useState<Record<string, number>>({
-    당류: 70, 나트륨: 1500, 포화지방: 10, 카페인: 300,
-  });
+  const [values, setValues] = useState<Record<string, number>>(defaultValues);
+
+  useEffect(() => {
+    try {
+      const savedFocus = localStorage.getItem("onboarding.focus");
+      if (savedFocus) {
+        const parsed = JSON.parse(savedFocus);
+        if (Array.isArray(parsed.sel)) setSel(parsed.sel.filter((k: string) => (items as string[]).includes(k)) as Key[]);
+        if (parsed.values) setValues((p) => ({ ...p, ...parsed.values }));
+        return;
+      }
+      const goalRaw = localStorage.getItem("onboarding.healthGoal");
+      if (goalRaw) {
+        const goal = JSON.parse(goalRaw);
+        if (Array.isArray(goal.focus)) {
+          const next = goal.focus.filter((k: string) => (items as string[]).includes(k)) as Key[];
+          if (next.length > 0) setSel(next);
+        }
+      }
+    } catch {}
+  }, []);
 
   const toggle = (v: Key) =>
     setSel((p) => (p.includes(v) ? p.filter((x) => x !== v) : [...p, v]));
@@ -57,6 +80,29 @@ function OnbFocus() {
       ...p,
       [k]: Math.max(cfg.min, Math.min(cfg.max, (p[k] ?? cfg.defaultValue) + delta)),
     }));
+  };
+
+  const handleSave = () => {
+    try {
+      const goalRaw = localStorage.getItem("onboarding.healthGoal");
+      const targets: Record<string, number> = {};
+      const management: Record<string, string> = {};
+      sel.forEach((k) => {
+        const cfg = config[k];
+        if (cfg.kind === "numeric") targets[k] = values[k] ?? cfg.defaultValue;
+        else management[k] = "detect";
+      });
+      localStorage.setItem(
+        "onboarding.focus",
+        JSON.stringify({
+          selectedHealthGoal: goalRaw ? JSON.parse(goalRaw) : null,
+          sel,
+          values,
+          targets,
+          management,
+        })
+      );
+    } catch {}
   };
 
   return (
@@ -140,6 +186,7 @@ function OnbFocus() {
 
         <Link
           to="/onboarding/restricted"
+          onClick={handleSave}
           className={cn(
             "h-14 rounded-2xl text-base font-semibold grid place-items-center",
             sel.length > 0 ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground pointer-events-none"
