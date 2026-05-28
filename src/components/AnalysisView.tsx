@@ -183,6 +183,20 @@ function Chip({ children, tone }: { children: React.ReactNode; tone?: "warn" }) 
   );
 }
 
+function RiskChip({ children, tone }: { children: React.ReactNode; tone: "ok" | "warn" | "bad" }) {
+  const styles =
+    tone === "ok"
+      ? "bg-success/15 text-success"
+      : tone === "warn"
+        ? "bg-warning/20 text-warning-foreground"
+        : "bg-destructive/15 text-destructive";
+  return (
+    <span className={cn("text-[11.5px] font-semibold px-2.5 py-1 rounded-full", styles)}>
+      {children}
+    </span>
+  );
+}
+
 function StatusBadge({ children, tone }: { children: React.ReactNode; tone: "ok" | "warn" }) {
   return (
     <span
