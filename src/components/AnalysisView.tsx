@@ -94,30 +94,43 @@ export function AnalysisView({ verdict = "warn" }: AnalysisViewProps) {
         <h3 className="text-[14px] font-bold">원재료명 분석</h3>
         <p className="mt-1 text-[12px] text-muted-foreground">원재료명에서 주의할 성분만 골라 정리했어요</p>
 
-        <div className="mt-3 rounded-2xl bg-muted/50 px-3.5 py-3">
-          <div className="text-[10.5px] font-semibold text-muted-foreground mb-1">원재료명</div>
-          <p className="text-[12.5px] leading-relaxed text-foreground/80">
-            정제수, 이산화탄소, 카라멜색소, 인산, 카페인, 아세설팜칼륨, 수크랄로스
-          </p>
+        {/* Risk summary */}
+        <div className="mt-4">
+          <div className="text-[11.5px] font-semibold text-foreground/80">성분 위험도</div>
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            <RiskChip tone="ok">낮음 2개</RiskChip>
+            <RiskChip tone="warn">주의 3개</RiskChip>
+            <RiskChip tone="bad">피해야 함 0개</RiskChip>
+          </div>
         </div>
 
-        <div className="mt-3 rounded-2xl border border-border/70 overflow-hidden">
-          <div className="grid grid-cols-[0.9fr_0.8fr_1.3fr] px-3.5 py-2 bg-muted/50 text-[11px] font-semibold text-muted-foreground">
-            <span>성분</span>
-            <span>분류</span>
-            <span>잇핏 해석</span>
+        {/* Raw ingredient text */}
+        <div className="mt-4">
+          <div className="text-[11.5px] font-semibold text-foreground/80">원재료명 원문</div>
+          <div className="mt-2 rounded-2xl bg-muted/40 px-3.5 py-3">
+            <p className="text-[12.5px] leading-relaxed text-foreground/75">
+              정제수, 이산화탄소, 카라멜색소, 인산, 카페인, 아세설팜칼륨, 수크랄로스
+            </p>
           </div>
-          <ul className="divide-y divide-border/60">
+        </div>
+
+        {/* Warning ingredient list */}
+        <div className="mt-4">
+          <div className="text-[11.5px] font-semibold text-foreground/80">주의 성분</div>
+          <ul className="mt-2 rounded-2xl border border-border/70 bg-background divide-y divide-border/60 overflow-hidden">
             {[
-              { n: "아세설팜칼륨", c: "대체당", i: "단맛을 내는 감미료예요" },
-              { n: "수크랄로스", c: "대체당", i: "과다 섭취 시 장이 예민할 수 있어요" },
-              { n: "카페인", c: "각성 성분", i: "민감하면 오후 섭취를 줄여요" },
-              { n: "인산", c: "첨가물", i: "과다 섭취는 주의가 필요해요" },
+              { n: "아세설팜칼륨", c: "대체당", i: "단맛을 내는 감미료예요." },
+              { n: "수크랄로스", c: "대체당", i: "장이 예민하면 섭취량을 조절해보세요." },
+              { n: "카페인", c: "각성 성분", i: "민감하면 오후 섭취를 줄여보세요." },
+              { n: "인산", c: "첨가물", i: "과다 섭취는 주의가 필요해요." },
             ].map((r) => (
-              <li key={r.n} className="grid grid-cols-[0.9fr_0.8fr_1.3fr] items-start gap-2 px-3.5 py-2.5">
-                <span className="text-[12.5px] font-semibold">{r.n}</span>
-                <span className="text-[11.5px] text-muted-foreground pt-0.5">{r.c}</span>
-                <span className="text-[12px] text-foreground/80 leading-snug">{r.i}</span>
+              <li key={r.n} className="px-3.5 py-3">
+                <div className="flex items-center gap-2">
+                  <StatusBadge tone="warn">주의</StatusBadge>
+                  <span className="text-[13.5px] font-semibold">{r.n}</span>
+                  <span className="text-[11px] text-muted-foreground ml-auto">{r.c}</span>
+                </div>
+                <p className="mt-1.5 text-[12.5px] leading-snug text-foreground/75">{r.i}</p>
               </li>
             ))}
           </ul>
