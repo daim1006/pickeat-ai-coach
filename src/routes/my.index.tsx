@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { BottomNav } from "@/components/BottomNav";
 import { ChevronRight, Crown, Target, Filter, Ban, Bell, Settings, User } from "lucide-react";
@@ -7,16 +8,41 @@ export const Route = createFileRoute("/my/")({
   component: My,
 });
 
-const settings = [
-  { to: "/my/goal", icon: Target, label: "건강 목표", desc: "체중 관리" },
-  { to: "/my/focus", icon: Filter, label: "집중 관리 성분", desc: "당, 나트륨 외 1개" },
-  { to: "/my/restricted", icon: Ban, label: "피해야 할 성분", desc: "없음" },
-  { to: "/my/subscription", icon: Crown, label: "구독 관리", desc: "Free 플랜" },
-  { to: "/my/notifications", icon: Bell, label: "알림 설정", desc: "" },
-  { to: "/my/account", icon: Settings, label: "계정 설정", desc: "" },
-] as const;
+const RESTRICTED_KEY = "onboarding.restricted";
 
 function My() {
+  const [restrictedCount, setRestrictedCount] = useState(0);
+  useEffect(() => {
+    const read = () => {
+      try {
+        const raw = localStorage.getItem(RESTRICTED_KEY);
+        if (!raw) return setRestrictedCount(0);
+        const p = JSON.parse(raw);
+        const sel: string[] = Array.isArray(p.sel) ? p.sel : [];
+        const custom: string[] = Array.isArray(p.custom) ? p.custom : [];
+        setRestrictedCount(new Set([...sel, ...custom]).size);
+      } catch {
+        setRestrictedCount(0);
+      }
+    };
+    read();
+    window.addEventListener("focus", read);
+    window.addEventListener("storage", read);
+    return () => {
+      window.removeEventListener("focus", read);
+      window.removeEventListener("storage", read);
+    };
+  }, []);
+
+  const settings = [
+    { to: "/my/goal", icon: Target, label: "건강 목표", desc: "체중 관리" },
+    { to: "/my/focus", icon: Filter, label: "집중 관리 성분", desc: "당, 나트륨 외 1개" },
+    { to: "/my/restricted", icon: Ban, label: "피해야 할 성분", desc: restrictedCount === 0 ? "없음" : `${restrictedCount}개` },
+    { to: "/my/subscription", icon: Crown, label: "구독 관리", desc: "Free 플랜" },
+    { to: "/my/notifications", icon: Bell, label: "알림 설정", desc: "" },
+    { to: "/my/account", icon: Settings, label: "계정 설정", desc: "" },
+  ] as const;
+
   return (
     <AppShell withBottomNav>
       <header className="px-5 pt-5">
