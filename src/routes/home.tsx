@@ -176,7 +176,7 @@ function Home() {
           <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-5 px-5 pb-1">
             {chips.map((t) => (
               <span key={t} className="shrink-0 h-9 px-4 rounded-full bg-surface border border-border text-[13px] font-medium grid place-items-center">
-                #{t}
+                {t}
               </span>
             ))}
           </div>
