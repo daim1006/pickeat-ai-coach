@@ -45,7 +45,7 @@ const badge: Record<string, { label: string; cls: string }> = {
 function Home() {
   const [focus, setFocus] = useState<FocusItem[]>(DEFAULT_FOCUS);
   const [chips, setChips] = useState<string[]>([]);
-  const [hasSaved, setHasSaved] = useState(false);
+  
 
   useEffect(() => {
     const load = () => {
