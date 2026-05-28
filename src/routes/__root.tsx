@@ -79,7 +79,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:description", content: "먹기 전에, 나에게 맞는지 먼저 확인해요." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-    links: [
+    ],
       {
         rel: "stylesheet",
         href: appCss,
