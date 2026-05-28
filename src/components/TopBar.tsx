@@ -6,9 +6,10 @@ interface TopBarProps {
   title?: string;
   back?: boolean;
   right?: ReactNode;
+  onBack?: () => void;
 }
 
-export function TopBar({ title, back = true, right }: TopBarProps) {
+export function TopBar({ title, back = true, right, onBack }: TopBarProps) {
   const router = useRouter();
   return (
     <header className="sticky top-0 z-30 h-14 px-2 flex items-center justify-between bg-background/85 backdrop-blur">
@@ -16,7 +17,7 @@ export function TopBar({ title, back = true, right }: TopBarProps) {
         {back && (
           <button
             aria-label="뒤로"
-            onClick={() => router.history.back()}
+            onClick={() => (onBack ? onBack() : router.history.back())}
             className="size-10 grid place-items-center -ml-1 rounded-full active:bg-muted"
           >
             <ChevronLeft className="size-6" />
@@ -28,3 +29,4 @@ export function TopBar({ title, back = true, right }: TopBarProps) {
     </header>
   );
 }
+
