@@ -3,22 +3,23 @@ import { useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { TopBar } from "@/components/TopBar";
 import { cn } from "@/lib/utils";
-import { Scale, Droplet, Salad, HeartPulse, Dumbbell } from "lucide-react";
+import { Scale, Droplet, Salad, HeartPulse, Dumbbell, Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/onboarding/goal")({
   component: OnbGoal,
 });
 
 const goals = [
-  { id: "weight", label: "체중 관리", desc: "칼로리와 당류를 함께 봐드려요", icon: Scale },
-  { id: "blood", label: "혈당 관리", desc: "당류와 GI 영향 성분을 체크해요", icon: Droplet },
-  { id: "sodium", label: "나트륨 줄이기", desc: "숨은 나트륨까지 찾아드려요", icon: HeartPulse },
-  { id: "gut", label: "장 건강", desc: "식이섬유와 첨가물을 봐드려요", icon: Salad },
-  { id: "protein", label: "단백질 중심", desc: "단백질 비율을 우선 분석해요", icon: Dumbbell },
+  { id: "weight", label: "체중 관리", desc: "칼로리와 당류를 함께 봐드려요", icon: Scale, focus: ["당류", "포화지방", "나트륨"] },
+  { id: "blood", label: "혈당 관리", desc: "당류와 GI 영향 성분을 체크해요", icon: Droplet, focus: ["당류", "탄수화물", "대체당"] },
+  { id: "sodium", label: "나트륨 줄이기", desc: "숨은 나트륨까지 찾아드려요", icon: HeartPulse, focus: ["나트륨"] },
+  { id: "gut", label: "장 건강", desc: "식이섬유와 첨가물을 봐드려요", icon: Salad, focus: ["대체당", "첨가물"] },
+  { id: "protein", label: "단백질 중심", desc: "단백질 비율을 우선 분석해요", icon: Dumbbell, focus: ["단백질", "포화지방"] },
 ];
 
 function OnbGoal() {
   const [sel, setSel] = useState<string | null>("weight");
+  const selected = goals.find((g) => g.id === sel);
 
   return (
     <AppShell>
@@ -29,7 +30,14 @@ function OnbGoal() {
         </h2>
         <p className="mt-2 text-[14px] text-muted-foreground">하나만 선택해 주세요</p>
 
-        <div className="mt-6 space-y-2.5">
+        <div className="mt-4 rounded-2xl bg-primary-soft border border-primary/30 px-4 py-3 flex items-start gap-2">
+          <Sparkles className="size-4 text-primary mt-0.5 shrink-0" />
+          <p className="text-[12.5px] leading-relaxed text-foreground/85">
+            성별과 만 나이를 기준으로 기본 권장량이 자동 설정돼요.
+          </p>
+        </div>
+
+        <div className="mt-5 space-y-2.5">
           {goals.map((g) => {
             const Icon = g.icon;
             const active = sel === g.id;
@@ -58,6 +66,19 @@ function OnbGoal() {
             );
           })}
         </div>
+
+        {selected && (
+          <div className="mt-4 rounded-2xl border border-border bg-surface px-4 py-3">
+            <div className="text-[11.5px] font-semibold text-muted-foreground">추천 집중 성분</div>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {selected.focus.map((f) => (
+                <span key={f} className="text-[12px] font-semibold px-2.5 py-1 rounded-full bg-primary-soft text-primary border border-primary/20">
+                  {f}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="flex-1 min-h-6" />
         <Link

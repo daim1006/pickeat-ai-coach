@@ -9,12 +9,12 @@ export const Route = createFileRoute("/onboarding/info")({
 });
 
 const genders = ["여성", "남성", "선택 안함"];
-const ages = ["10대", "20대", "30대", "40대", "50대+"];
 
 function OnbInfo() {
   const [gender, setGender] = useState<string | null>(null);
-  const [age, setAge] = useState<string | null>(null);
-  const ready = gender && age;
+  const [age, setAge] = useState<string>("");
+  const ageNum = parseInt(age, 10);
+  const ready = !!gender && !isNaN(ageNum) && ageNum > 0 && ageNum < 120;
 
   return (
     <AppShell>
@@ -23,7 +23,9 @@ function OnbInfo() {
         <h2 className="text-2xl font-extrabold tracking-tight leading-snug">
           기본 정보를<br />알려주세요
         </h2>
-        <p className="mt-2 text-[14px] text-muted-foreground">맞춤 분석에 최소한으로만 사용해요</p>
+        <p className="mt-2 text-[14px] text-muted-foreground">
+          입력한 정보로 한국인 영양섭취기준에 맞춘 기본 권장량을 설정해요.
+        </p>
 
         <Section label="성별">
           <div className="grid grid-cols-3 gap-2">
@@ -33,15 +35,26 @@ function OnbInfo() {
           </div>
         </Section>
 
-        <Section label="연령대">
-          <div className="grid grid-cols-3 gap-2">
-            {ages.map((a) => (
-              <Pill key={a} active={age === a} onClick={() => setAge(a)}>{a}</Pill>
-            ))}
+        <Section label="만 나이">
+          <div className="relative">
+            <input
+              type="number"
+              inputMode="numeric"
+              value={age}
+              onChange={(e) => setAge(e.target.value.replace(/[^0-9]/g, "").slice(0, 3))}
+              placeholder="예: 24"
+              className="w-full h-14 rounded-2xl border border-border bg-surface px-4 pr-12 text-[16px] font-medium outline-none focus:border-primary transition-colors"
+            />
+            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[13px] text-muted-foreground">세</span>
           </div>
         </Section>
 
-        <div className="flex-1" />
+        <div className="flex-1 min-h-8" />
+
+        <p className="text-[11.5px] leading-relaxed text-muted-foreground/80 mb-3">
+          잇핏은 일반 건강관리 참고용 서비스이며, 의료적 판단을 대체하지 않아요.
+        </p>
+
         <Link
           to="/onboarding/goal"
           aria-disabled={!ready}
