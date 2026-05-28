@@ -186,6 +186,7 @@ function OnbFocus() {
 
         <Link
           to="/onboarding/restricted"
+          onClick={handleSave}
           className={cn(
             "h-14 rounded-2xl text-base font-semibold grid place-items-center",
             sel.length > 0 ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground pointer-events-none"
