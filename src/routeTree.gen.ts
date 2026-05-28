@@ -9,38 +9,127 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as StartRouteImport } from './routes/start'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as OnboardingRestrictedRouteImport } from './routes/onboarding.restricted'
+import { Route as OnboardingInfoRouteImport } from './routes/onboarding.info'
+import { Route as OnboardingGoalRouteImport } from './routes/onboarding.goal'
+import { Route as OnboardingFocusRouteImport } from './routes/onboarding.focus'
+import { Route as OnboardingCompleteRouteImport } from './routes/onboarding.complete'
 
+const StartRoute = StartRouteImport.update({
+  id: '/start',
+  path: '/start',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OnboardingRestrictedRoute = OnboardingRestrictedRouteImport.update({
+  id: '/onboarding/restricted',
+  path: '/onboarding/restricted',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingInfoRoute = OnboardingInfoRouteImport.update({
+  id: '/onboarding/info',
+  path: '/onboarding/info',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingGoalRoute = OnboardingGoalRouteImport.update({
+  id: '/onboarding/goal',
+  path: '/onboarding/goal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingFocusRoute = OnboardingFocusRouteImport.update({
+  id: '/onboarding/focus',
+  path: '/onboarding/focus',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingCompleteRoute = OnboardingCompleteRouteImport.update({
+  id: '/onboarding/complete',
+  path: '/onboarding/complete',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/start': typeof StartRoute
+  '/onboarding/complete': typeof OnboardingCompleteRoute
+  '/onboarding/focus': typeof OnboardingFocusRoute
+  '/onboarding/goal': typeof OnboardingGoalRoute
+  '/onboarding/info': typeof OnboardingInfoRoute
+  '/onboarding/restricted': typeof OnboardingRestrictedRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/start': typeof StartRoute
+  '/onboarding/complete': typeof OnboardingCompleteRoute
+  '/onboarding/focus': typeof OnboardingFocusRoute
+  '/onboarding/goal': typeof OnboardingGoalRoute
+  '/onboarding/info': typeof OnboardingInfoRoute
+  '/onboarding/restricted': typeof OnboardingRestrictedRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/start': typeof StartRoute
+  '/onboarding/complete': typeof OnboardingCompleteRoute
+  '/onboarding/focus': typeof OnboardingFocusRoute
+  '/onboarding/goal': typeof OnboardingGoalRoute
+  '/onboarding/info': typeof OnboardingInfoRoute
+  '/onboarding/restricted': typeof OnboardingRestrictedRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/start'
+    | '/onboarding/complete'
+    | '/onboarding/focus'
+    | '/onboarding/goal'
+    | '/onboarding/info'
+    | '/onboarding/restricted'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/start'
+    | '/onboarding/complete'
+    | '/onboarding/focus'
+    | '/onboarding/goal'
+    | '/onboarding/info'
+    | '/onboarding/restricted'
+  id:
+    | '__root__'
+    | '/'
+    | '/start'
+    | '/onboarding/complete'
+    | '/onboarding/focus'
+    | '/onboarding/goal'
+    | '/onboarding/info'
+    | '/onboarding/restricted'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  StartRoute: typeof StartRoute
+  OnboardingCompleteRoute: typeof OnboardingCompleteRoute
+  OnboardingFocusRoute: typeof OnboardingFocusRoute
+  OnboardingGoalRoute: typeof OnboardingGoalRoute
+  OnboardingInfoRoute: typeof OnboardingInfoRoute
+  OnboardingRestrictedRoute: typeof OnboardingRestrictedRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/start': {
+      id: '/start'
+      path: '/start'
+      fullPath: '/start'
+      preLoaderRoute: typeof StartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,12 +137,63 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/onboarding/restricted': {
+      id: '/onboarding/restricted'
+      path: '/onboarding/restricted'
+      fullPath: '/onboarding/restricted'
+      preLoaderRoute: typeof OnboardingRestrictedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding/info': {
+      id: '/onboarding/info'
+      path: '/onboarding/info'
+      fullPath: '/onboarding/info'
+      preLoaderRoute: typeof OnboardingInfoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding/goal': {
+      id: '/onboarding/goal'
+      path: '/onboarding/goal'
+      fullPath: '/onboarding/goal'
+      preLoaderRoute: typeof OnboardingGoalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding/focus': {
+      id: '/onboarding/focus'
+      path: '/onboarding/focus'
+      fullPath: '/onboarding/focus'
+      preLoaderRoute: typeof OnboardingFocusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding/complete': {
+      id: '/onboarding/complete'
+      path: '/onboarding/complete'
+      fullPath: '/onboarding/complete'
+      preLoaderRoute: typeof OnboardingCompleteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  StartRoute: StartRoute,
+  OnboardingCompleteRoute: OnboardingCompleteRoute,
+  OnboardingFocusRoute: OnboardingFocusRoute,
+  OnboardingGoalRoute: OnboardingGoalRoute,
+  OnboardingInfoRoute: OnboardingInfoRoute,
+  OnboardingRestrictedRoute: OnboardingRestrictedRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
