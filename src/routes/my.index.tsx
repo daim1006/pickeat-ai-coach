@@ -9,20 +9,41 @@ export const Route = createFileRoute("/my/")({
 });
 
 const RESTRICTED_KEY = "onboarding.restricted";
+const FOCUS_KEY = "onboarding.focus";
+
+function focusLabel(sel: string[]) {
+  if (sel.length === 0) return "선택 없음";
+  if (sel.length <= 2) return sel.join(", ");
+  return `${sel.slice(0, 2).join(", ")} 외 ${sel.length - 2}개`;
+}
 
 function My() {
   const [restrictedCount, setRestrictedCount] = useState(0);
+  const [focusDesc, setFocusDesc] = useState("선택 없음");
   useEffect(() => {
     const read = () => {
       try {
         const raw = localStorage.getItem(RESTRICTED_KEY);
-        if (!raw) return setRestrictedCount(0);
-        const p = JSON.parse(raw);
-        const sel: string[] = Array.isArray(p.sel) ? p.sel : [];
-        const custom: string[] = Array.isArray(p.custom) ? p.custom : [];
-        setRestrictedCount(new Set([...sel, ...custom]).size);
+        if (!raw) setRestrictedCount(0);
+        else {
+          const p = JSON.parse(raw);
+          const sel: string[] = Array.isArray(p.sel) ? p.sel : [];
+          const custom: string[] = Array.isArray(p.custom) ? p.custom : [];
+          setRestrictedCount(new Set([...sel, ...custom]).size);
+        }
       } catch {
         setRestrictedCount(0);
+      }
+      try {
+        const raw = localStorage.getItem(FOCUS_KEY);
+        if (!raw) setFocusDesc("선택 없음");
+        else {
+          const p = JSON.parse(raw);
+          const sel: string[] = Array.isArray(p.sel) ? p.sel : [];
+          setFocusDesc(focusLabel(sel));
+        }
+      } catch {
+        setFocusDesc("선택 없음");
       }
     };
     read();
@@ -36,7 +57,7 @@ function My() {
 
   const settings = [
     { to: "/my/goal", icon: Target, label: "건강 목표", desc: "체중 관리" },
-    { to: "/my/focus", icon: Filter, label: "집중 관리 성분", desc: "당, 나트륨 외 1개" },
+    { to: "/my/focus", icon: Filter, label: "집중 관리 성분", desc: focusDesc },
     { to: "/my/restricted", icon: Ban, label: "피해야 할 성분", desc: restrictedCount === 0 ? "없음" : `${restrictedCount}개` },
     { to: "/my/subscription", icon: Crown, label: "구독 관리", desc: "Free 플랜" },
     { to: "/my/notifications", icon: Bell, label: "알림 설정", desc: "" },
