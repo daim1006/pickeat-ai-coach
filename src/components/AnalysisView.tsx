@@ -146,9 +146,9 @@ export function AnalysisView() {
       <section className="rounded-3xl p-4 bg-surface border border-border flex gap-3">
         <div className="size-14 rounded-2xl bg-gradient-to-br from-zinc-200 to-zinc-300 shrink-0" />
         <div className="flex-1 min-w-0">
-          <div className="text-[11.5px] text-muted-foreground">{data.product?.brand ?? "브랜드 정보 없음"}</div>
+          <div className="text-[11.5px] text-muted-foreground">{data.product?.foodType ?? "정보 없음"}</div>
           <div className="text-[15.5px] font-bold mt-0.5 truncate">
-            {data.product?.name ?? "제품명 확인 불가"}
+            {data.product?.name ?? "확인 불가"}
           </div>
           {data.product?.tags && data.product.tags.length > 0 && (
             <div className="mt-1.5 flex gap-1.5 flex-wrap">
