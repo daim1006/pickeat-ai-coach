@@ -47,7 +47,7 @@ const data: Item[] = ([
   { id: "7", name: "아메리카노", brand: "스타벅스", status: "warn", date: daysAgo(10, 8, 30) },
   { id: "8", name: "삼각김밥 참치마요", brand: "GS25", status: "warn", date: daysAgo(25, 12, 0) },
   { id: "9", name: "초콜릿바", brand: "허쉬", status: "bad", date: daysAgo(40, 15, 45) },
-].sort((a, b) => b.date.getTime() - a.date.getTime());
+] as Item[]).sort((a, b) => b.date.getTime() - a.date.getTime());
 
 const badge: Record<string, { l: string; c: string }> = {
   ok: { l: "괜찮아요", c: "bg-success/15 text-success" },
