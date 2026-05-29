@@ -8,6 +8,8 @@
 export const N8N_WEBHOOKS = {
   /** 영양 성분표 스캔 및 분석 */
   scan: "https://upstage15.app.n8n.cloud/webhook/scan",
+  /** 음식 스캔 (영양/원재료 동시 분석) */
+  scanFood: "https://upstage15.app.n8n.cloud/webhook/scan-food",
   /** 누적 섭취량 업데이트 */
   saveIntake: "https://upstage15.app.n8n.cloud/webhook/saveIntake",
   /** 스캔 기록 저장 */
@@ -133,6 +135,29 @@ export interface ScanPayload {
 /** 영양 성분표 스캔 및 분석 */
 export function scanNutrition<T = unknown>(payload: ScanPayload, options?: CallN8nOptions) {
   return callN8n<T, ScanPayload>("scan", payload, options);
+}
+
+export interface ScanFoodPayload {
+  image_nutrition: string;
+  image_ingredients: string;
+  user_health_goal: string;
+}
+
+export interface ScanFoodResponse {
+  success: boolean;
+  product_name?: string;
+  food_type?: string;
+  nutrition?: unknown;
+  ingredients?: string;
+  warning_ingredients?: unknown[];
+  verdict?: string;
+  ai_comment?: string;
+  [k: string]: unknown;
+}
+
+/** 음식 스캔 (영양/원재료 동시 분석) */
+export function scanFood(payload: ScanFoodPayload, options?: CallN8nOptions) {
+  return callN8n<ScanFoodResponse, ScanFoodPayload>("scanFood", payload, options);
 }
 
 /** 누적 섭취량 업데이트 */
