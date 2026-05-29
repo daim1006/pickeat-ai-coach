@@ -69,6 +69,9 @@ function OnbInfo() {
         <Link
           to="/onboarding/goal"
           aria-disabled={!ready}
+          onClick={() => {
+            if (ready && gender) persistInfo(gender, ageNum);
+          }}
           className={cn(
             "h-14 rounded-2xl text-base font-semibold grid place-items-center transition-all",
             ready ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground pointer-events-none"
