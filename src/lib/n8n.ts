@@ -8,6 +8,8 @@
 export const N8N_WEBHOOKS = {
   /** 영양 성분표 스캔 및 분석 */
   scan: "https://upstage15.app.n8n.cloud/webhook/scan",
+  /** 음식 스캔 (영양/원재료 동시 분석) */
+  scanFood: "https://upstage15.app.n8n.cloud/webhook/scan-food",
   /** 누적 섭취량 업데이트 */
   saveIntake: "https://upstage15.app.n8n.cloud/webhook/saveIntake",
   /** 스캔 기록 저장 */
