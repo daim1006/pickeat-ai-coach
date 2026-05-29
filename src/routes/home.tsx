@@ -31,9 +31,9 @@ const DEFAULT_FOCUS: FocusItem[] = [
 
 
 const eaten = [
-  { name: "제로콜라 500ml", brand: "코카콜라", status: "ok", time: "13:20" },
-  { name: "닭가슴살 샐러드", brand: "샐러디", status: "ok", time: "12:30" },
-  { name: "초코칩 쿠키", brand: "마켓오", status: "warn", time: "10:15" },
+  { name: "제로콜라 500ml", foodType: "탄산음료", status: "ok", time: "13:20" },
+  { name: "닭가슴살 샐러드", foodType: "즉석조리식품", status: "ok", time: "12:30" },
+  { name: "초코칩 쿠키", foodType: "과자", status: "warn", time: "10:15" },
 ];
 
 const badge: Record<string, { label: string; cls: string }> = {
@@ -227,7 +227,7 @@ function Home() {
                     <div className="size-12 rounded-xl bg-muted shrink-0" />
                     <div className="flex-1 min-w-0">
                       <div className="text-[14px] font-semibold truncate">{e.name}</div>
-                      <div className="text-[11.5px] text-muted-foreground">{e.brand} · {e.time}</div>
+                      <div className="text-[11.5px] text-muted-foreground">{e.foodType} · {e.time}</div>
                     </div>
                     <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full ${b.cls}`}>{b.label}</span>
                   </Link>
