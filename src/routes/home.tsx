@@ -45,6 +45,17 @@ const badge: Record<string, { label: string; cls: string }> = {
 function Home() {
   const [focus, setFocus] = useState<FocusItem[]>(DEFAULT_FOCUS);
   const [chips, setChips] = useState<string[]>([]);
+  const [userName, setUserName] = useState<string>("다임");
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("eatfit.user");
+      if (raw) {
+        const u = JSON.parse(raw);
+        if (u?.name) setUserName(String(u.name));
+      }
+    } catch {}
+  }, []);
   
 
   useEffect(() => {
