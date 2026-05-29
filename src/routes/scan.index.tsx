@@ -2,7 +2,8 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
-import { X, ImageIcon, HelpCircle, Zap } from "lucide-react";
+import { X, ImageIcon, HelpCircle, Zap, Loader2 } from "lucide-react";
+import { scanNutrition, N8nError } from "@/lib/n8n";
 
 export const Route = createFileRoute("/scan/")({
   component: Scan,
@@ -13,6 +14,7 @@ function Scan() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [capturing, setCapturing] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
