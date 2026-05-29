@@ -12,9 +12,6 @@ export const Route = createFileRoute("/history/")({
 const tabs = ["오늘", "전체"] as const;
 type Tab = (typeof tabs)[number];
 
-const periods = ["전체 기간", "오늘", "최근 7일", "최근 30일", "직접 선택"] as const;
-type Period = (typeof periods)[number];
-
 // Anchor dates relative to "today" so the demo data stays meaningful.
 const NOW = new Date();
 const today = (h: number, m: number) => {
@@ -77,7 +74,7 @@ function timeLabel(d: Date) {
 
 function History() {
   const [tab, setTab] = useState<Tab>("오늘");
-  const [period, setPeriod] = useState<Period>("전체 기간");
+  const [rangeOpen, setRangeOpen] = useState(false);
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [remote, setRemote] = useState<Item[]>([]);
@@ -126,17 +123,7 @@ function History() {
       list = list.filter((d) => isSameDay(d.date, now));
     }
 
-    if (period === "오늘") {
-      list = list.filter((d) => isSameDay(d.date, now));
-    } else if (period === "최근 7일") {
-      const c = new Date(now);
-      c.setDate(c.getDate() - 7);
-      list = list.filter((d) => d.date >= c);
-    } else if (period === "최근 30일") {
-      const c = new Date(now);
-      c.setDate(c.getDate() - 30);
-      list = list.filter((d) => d.date >= c);
-    } else if (period === "직접 선택") {
+    if (rangeOpen) {
       if (from) {
         const f = new Date(from);
         f.setHours(0, 0, 0, 0);
@@ -150,7 +137,7 @@ function History() {
     }
 
     return list;
-  }, [tab, period, from, to, remote]);
+  }, [tab, rangeOpen, from, to, remote]);
 
 
   return (
@@ -159,40 +146,36 @@ function History() {
         <h1 className="text-[22px] font-extrabold tracking-tight">기록</h1>
         <p className="text-[13px] text-muted-foreground mt-1">스캔한 음식과 분석을 한눈에 봐요</p>
 
-        <div className="mt-4 inline-flex p-1 bg-muted rounded-full">
-          {tabs.map((x) => (
-            <button
-              key={x}
-              onClick={() => setTab(x)}
-              className={cn(
-                "px-4 h-9 rounded-full text-[13px] font-medium transition-all",
-                tab === x ? "bg-surface text-foreground shadow-[var(--shadow-soft)]" : "text-muted-foreground"
-              )}
-            >
-              {x}
-            </button>
-          ))}
+        <div className="mt-4 flex items-center justify-between gap-2">
+          <div className="inline-flex p-1 bg-muted rounded-full">
+            {tabs.map((x) => (
+              <button
+                key={x}
+                onClick={() => setTab(x)}
+                className={cn(
+                  "px-4 h-9 rounded-full text-[13px] font-medium transition-all",
+                  tab === x ? "bg-surface text-foreground shadow-[var(--shadow-soft)]" : "text-muted-foreground"
+                )}
+              >
+                {x}
+              </button>
+            ))}
+          </div>
+          <button
+            onClick={() => setRangeOpen((v) => !v)}
+            className={cn(
+              "px-3 h-9 rounded-full text-[12px] font-medium border transition-all",
+              rangeOpen
+                ? "bg-primary/10 text-primary border-primary"
+                : "bg-surface text-muted-foreground border-border"
+            )}
+          >
+            기간 지정
+          </button>
         </div>
 
-        <div className="mt-3 flex flex-wrap gap-1.5">
-          {periods.map((p) => (
-            <button
-              key={p}
-              onClick={() => setPeriod(p)}
-              className={cn(
-                "px-3 h-8 rounded-full text-[12px] font-medium border transition-all",
-                period === p
-                  ? "bg-primary/10 text-primary border-primary"
-                  : "bg-surface text-muted-foreground border-border"
-              )}
-            >
-              {p}
-            </button>
-          ))}
-        </div>
-
-        {period === "직접 선택" && (
-          <div className="mt-2 flex items-center gap-2">
+        {rangeOpen && (
+          <div className="mt-3 flex items-center gap-2">
             <input
               type="date"
               value={from}
