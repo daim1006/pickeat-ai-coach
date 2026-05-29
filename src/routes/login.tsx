@@ -77,13 +77,6 @@ function Login() {
         >
           로그인
         </button>
-        <button
-          type="button"
-          onClick={() => navigate({ to: "/signup" })}
-          className="mt-3 w-full h-12 text-[14px] font-medium text-muted-foreground active:text-foreground"
-        >
-          아직 계정이 없어요
-        </button>
       </form>
     </AppShell>
   );
