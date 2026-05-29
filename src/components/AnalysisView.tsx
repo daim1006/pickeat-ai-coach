@@ -85,7 +85,7 @@ function normalize(input: any): AnalysisData | null {
     : undefined;
 
   return {
-    product: product && (product.name || product.brand) ? product : undefined,
+    product: product ?? undefined,
     verdict: src.verdict as Verdict | undefined,
     verdictTitle: src.verdictTitle,
     verdictSub: src.verdictSub,
