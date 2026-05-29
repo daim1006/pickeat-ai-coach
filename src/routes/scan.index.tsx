@@ -8,7 +8,7 @@ export const Route = createFileRoute("/scan/")({
   component: Scan,
 });
 
-type Step = 1 | 2 | 3;
+type Step = 1 | 2;
 
 const STEP_COPY: Record<Step, { label: string; title: string; description: string; storageKey: string }> = {
   1: {
@@ -22,12 +22,6 @@ const STEP_COPY: Record<Step, { label: string; title: string; description: strin
     title: "원재료표를 스캔해주세요",
     description: "원재료명과 함량이 함께 보이도록 촬영해주세요.",
     storageKey: "scan.image.ingredients",
-  },
-  3: {
-    label: "제품정보",
-    title: "제품명과 식품유형이 있는 부분을 스캔해주세요",
-    description: "제품명과 식품유형이 함께 보이도록 촬영해주세요.",
-    storageKey: "scan.image.product",
   },
 };
 
@@ -183,7 +177,7 @@ function Scan() {
         console.warn("sessionStorage write failed", e);
       }
 
-      if (step < 3) {
+      if (step < 2) {
         setStep((step + 1) as Step);
         setCapturing(false);
         return;
@@ -219,7 +213,7 @@ function Scan() {
             <X className="size-5" />
           </button>
           <div className="flex flex-col items-center">
-            <span className="text-[11px] font-medium text-white/70">{step}/3</span>
+            <span className="text-[11px] font-medium text-white/70">{step}/2</span>
             <span className="text-[13px] font-semibold">{copy.label}</span>
           </div>
           <Link to="/scan/guide" className="size-10 grid place-items-center rounded-full bg-white/10" aria-label="가이드">
@@ -229,7 +223,7 @@ function Scan() {
 
         {/* step progress dots */}
         <div className="flex items-center justify-center gap-1.5 mt-2">
-          {[1, 2, 3].map((i) => (
+          {[1, 2].map((i) => (
             <span
               key={i}
               className={`h-1 rounded-full transition-all ${i === step ? "w-6 bg-primary" : i < step ? "w-3 bg-primary/60" : "w-3 bg-white/20"}`}
