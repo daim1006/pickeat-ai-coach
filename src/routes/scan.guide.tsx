@@ -10,7 +10,7 @@ export const Route = createFileRoute("/scan/guide")({
 const tips = [
   "밝은 곳에서 찍어주세요.",
   "글자가 흐리지 않게 가까이서 찍어주세요.",
-  "원재료표와 영양성분표가 화면 안에 모두 들어오도록\n촬영해주세요.",
+  "원재료표와 영양성분표가 화면 안에 모두 들어오도록 \n촬영해주세요.",
 ];
 
 function ScanGuide() {
