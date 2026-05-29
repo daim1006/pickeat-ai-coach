@@ -8,7 +8,7 @@ export const Route = createFileRoute("/scan/")({
   component: Scan,
 });
 
-type Step = 1 | 2 | 3;
+type Step = 1 | 2;
 
 const STEP_COPY: Record<Step, { label: string; title: string; description: string; storageKey: string }> = {
   1: {
@@ -22,12 +22,6 @@ const STEP_COPY: Record<Step, { label: string; title: string; description: strin
     title: "원재료표를 스캔해주세요",
     description: "원재료명과 함량이 함께 보이도록 촬영해주세요.",
     storageKey: "scan.image.ingredients",
-  },
-  3: {
-    label: "제품정보",
-    title: "제품명과 식품유형이 있는 부분을 스캔해주세요",
-    description: "제품명과 식품유형이 함께 보이도록 촬영해주세요.",
-    storageKey: "scan.image.product",
   },
 };
 
