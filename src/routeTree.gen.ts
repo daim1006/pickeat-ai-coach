@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as StartRouteImport } from './routes/start'
+import { Route as SignupRouteImport } from './routes/signup'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as ChatRouteImport } from './routes/chat'
@@ -39,6 +40,11 @@ import { Route as AnalyzeLoadingRouteImport } from './routes/analyze.loading'
 const StartRoute = StartRouteImport.update({
   id: '/start',
   path: '/start',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NotificationsRoute = NotificationsRouteImport.update({
@@ -172,6 +178,7 @@ export interface FileRoutesByFullPath {
   '/chat': typeof ChatRoute
   '/home': typeof HomeRoute
   '/notifications': typeof NotificationsRoute
+  '/signup': typeof SignupRoute
   '/start': typeof StartRoute
   '/analyze/loading': typeof AnalyzeLoadingRoute
   '/analyze/result': typeof AnalyzeResultRoute
@@ -200,6 +207,7 @@ export interface FileRoutesByTo {
   '/chat': typeof ChatRoute
   '/home': typeof HomeRoute
   '/notifications': typeof NotificationsRoute
+  '/signup': typeof SignupRoute
   '/start': typeof StartRoute
   '/analyze/loading': typeof AnalyzeLoadingRoute
   '/analyze/result': typeof AnalyzeResultRoute
@@ -229,6 +237,7 @@ export interface FileRoutesById {
   '/chat': typeof ChatRoute
   '/home': typeof HomeRoute
   '/notifications': typeof NotificationsRoute
+  '/signup': typeof SignupRoute
   '/start': typeof StartRoute
   '/analyze/loading': typeof AnalyzeLoadingRoute
   '/analyze/result': typeof AnalyzeResultRoute
@@ -259,6 +268,7 @@ export interface FileRouteTypes {
     | '/chat'
     | '/home'
     | '/notifications'
+    | '/signup'
     | '/start'
     | '/analyze/loading'
     | '/analyze/result'
@@ -287,6 +297,7 @@ export interface FileRouteTypes {
     | '/chat'
     | '/home'
     | '/notifications'
+    | '/signup'
     | '/start'
     | '/analyze/loading'
     | '/analyze/result'
@@ -315,6 +326,7 @@ export interface FileRouteTypes {
     | '/chat'
     | '/home'
     | '/notifications'
+    | '/signup'
     | '/start'
     | '/analyze/loading'
     | '/analyze/result'
@@ -344,6 +356,7 @@ export interface RootRouteChildren {
   ChatRoute: typeof ChatRoute
   HomeRoute: typeof HomeRoute
   NotificationsRoute: typeof NotificationsRoute
+  SignupRoute: typeof SignupRoute
   StartRoute: typeof StartRoute
   AnalyzeLoadingRoute: typeof AnalyzeLoadingRoute
   AnalyzeResultRoute: typeof AnalyzeResultRoute
@@ -375,6 +388,13 @@ declare module '@tanstack/react-router' {
       path: '/start'
       fullPath: '/start'
       preLoaderRoute: typeof StartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/notifications': {
@@ -560,6 +580,7 @@ const rootRouteChildren: RootRouteChildren = {
   ChatRoute: ChatRoute,
   HomeRoute: HomeRoute,
   NotificationsRoute: NotificationsRoute,
+  SignupRoute: SignupRoute,
   StartRoute: StartRoute,
   AnalyzeLoadingRoute: AnalyzeLoadingRoute,
   AnalyzeResultRoute: AnalyzeResultRoute,
