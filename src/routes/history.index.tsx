@@ -37,7 +37,7 @@ type Item = {
   date: Date;
 };
 
-const data: Item[] = [
+const data: Item[] = ([
   { id: "1", name: "제로콜라 500ml", brand: "코카콜라", status: "warn", date: today(13, 20) },
   { id: "2", name: "닭가슴살 샐러드", brand: "샐러디", status: "ok", date: today(12, 30) },
   { id: "3", name: "초코칩 쿠키", brand: "마켓오", status: "bad", date: today(10, 15) },
