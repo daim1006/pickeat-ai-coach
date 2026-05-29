@@ -217,9 +217,6 @@ function Home() {
         <section className="pb-4">
           <div className="flex items-center justify-between mb-2 px-1">
             <h2 className="text-[14px] font-bold">오늘 먹은 음식</h2>
-            <Link to="/history" className="text-[12px] text-muted-foreground flex items-center">
-              전체보기 <ChevronRight className="size-3.5" />
-            </Link>
           </div>
           <ul className="space-y-2">
             {eaten.map((e) => {
