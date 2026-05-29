@@ -20,6 +20,11 @@ function focusLabel(sel: string[]) {
 function My() {
   const [restrictedCount, setRestrictedCount] = useState(0);
   const [focusDesc, setFocusDesc] = useState("선택 없음");
+  const [profile, setProfile] = useState<{ name: string; age: number | null; healthGoal: string | null }>({
+    name: "다임",
+    age: null,
+    healthGoal: null,
+  });
   useEffect(() => {
     const read = () => {
       try {
@@ -45,6 +50,17 @@ function My() {
       } catch {
         setFocusDesc("선택 없음");
       }
+      try {
+        const userRaw = localStorage.getItem("eatfit.user");
+        const goalRaw = localStorage.getItem("onboarding.healthGoal");
+        const user = userRaw ? JSON.parse(userRaw) : {};
+        const goal = goalRaw ? JSON.parse(goalRaw) : null;
+        setProfile({
+          name: user?.name ?? "다임",
+          age: typeof user?.age === "number" ? user.age : null,
+          healthGoal: goal?.label ?? null,
+        });
+      } catch {}
     };
     read();
     window.addEventListener("focus", read);
@@ -54,6 +70,8 @@ function My() {
       window.removeEventListener("storage", read);
     };
   }, []);
+
+  const goalDesc = profile.healthGoal ?? "체중 관리";
 
   const settings = [
     { to: "/my/goal", icon: Target, label: "건강 목표", desc: "체중 관리" },
