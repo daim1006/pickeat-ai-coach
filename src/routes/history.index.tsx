@@ -63,27 +63,6 @@ function isSameDay(a: Date, b: Date) {
   );
 }
 
-function startOfWeek(d: Date) {
-  // Monday-based week
-  const x = new Date(d);
-  const day = x.getDay(); // 0=Sun..6=Sat
-  const diff = (day + 6) % 7;
-  x.setHours(0, 0, 0, 0);
-  x.setDate(x.getDate() - diff);
-  return x;
-}
-
-function weekLabel(start: Date) {
-  const end = new Date(start);
-  end.setDate(end.getDate() + 6);
-  const sow = startOfWeek(new Date());
-  if (start.getTime() === sow.getTime()) return "이번주";
-  const lastWeek = new Date(sow);
-  lastWeek.setDate(lastWeek.getDate() - 7);
-  if (start.getTime() === lastWeek.getTime()) return "지난주";
-  const fmt = (d: Date) => `${d.getMonth() + 1}.${d.getDate()}`;
-  return `${fmt(start)} – ${fmt(end)}`;
-}
 
 function timeLabel(d: Date) {
   const now = new Date();
@@ -173,19 +152,6 @@ function History() {
     return list;
   }, [tab, period, from, to, remote]);
 
-  const grouped = useMemo(() => {
-    if (tab !== "전체") return null;
-    const map = new Map<number, Item[]>();
-    for (const it of filtered) {
-      const k = startOfWeek(it.date).getTime();
-      const arr = map.get(k) ?? [];
-      arr.push(it);
-      map.set(k, arr);
-    }
-    return Array.from(map.entries())
-      .sort((a, b) => b[0] - a[0])
-      .map(([k, items]) => ({ start: new Date(k), items }));
-  }, [tab, filtered]);
 
   return (
     <AppShell withBottomNav>
@@ -244,33 +210,12 @@ function History() {
         )}
       </header>
 
-      {tab === "오늘" ? (
-        <ul className="px-5 mt-4 space-y-2 pb-6">
-          {filtered.map((d) => (
-            <Row key={d.id} d={d} />
-          ))}
-          {filtered.length === 0 && <EmptyState />}
-        </ul>
-      ) : (
-        <div className="px-5 mt-4 pb-6 space-y-5">
-          {grouped && grouped.length > 0 ? (
-            grouped.map((g) => (
-              <section key={g.start.getTime()}>
-                <h2 className="text-[12.5px] font-semibold text-muted-foreground mb-2">
-                  {weekLabel(g.start)}
-                </h2>
-                <ul className="space-y-2">
-                  {g.items.map((d) => (
-                    <Row key={d.id} d={d} />
-                  ))}
-                </ul>
-              </section>
-            ))
-          ) : (
-            <EmptyState />
-          )}
-        </div>
-      )}
+      <ul className="px-5 mt-4 space-y-2 pb-6">
+        {filtered.map((d) => (
+          <Row key={d.id} d={d} />
+        ))}
+        {filtered.length === 0 && <EmptyState />}
+      </ul>
       <BottomNav />
     </AppShell>
   );
