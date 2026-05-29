@@ -60,28 +60,42 @@ function normalize(input: any): AnalysisData | null {
   if (!src || typeof src !== "object") return null;
 
   const product = src.product ?? {
-    name: src.productName ?? src.name,
-    brand: src.brand,
-    foodType: src.foodType ?? src.category ?? src.productType,
+    name: src.product_name ?? src.productName ?? src.name,
+    brand: src.food_type ?? src.brand,
+    foodType: src.food_type ?? src.foodType ?? src.category ?? src.productType,
     tags: src.tags,
   };
 
-  const nutrition: NutritionRow[] | undefined = Array.isArray(src.nutrition)
-    ? src.nutrition.map((r: any) => ({
-        name: String(r.name ?? r.n ?? ""),
-        value: String(r.value ?? r.v ?? ""),
-        status: String(r.status ?? r.s ?? ""),
-        tone: (r.tone ?? r.t ?? "ok") as Tone,
-      }))
-    : undefined;
+  const rawNutrition = src.nutrition;
+  let nutrition: NutritionRow[] | undefined;
+  if (Array.isArray(rawNutrition)) {
+    nutrition = rawNutrition.map((r: any) => ({
+      name: String(r.name ?? r.n ?? ""),
+      value: String(r.value ?? r.v ?? ""),
+      status: String(r.status ?? r.s ?? ""),
+      tone: (r.tone ?? r.t ?? "ok") as Tone,
+    }));
+  } else if (rawNutrition && typeof rawNutrition === "object") {
+    nutrition = Object.entries(rawNutrition).map(([name, value]) => ({
+      name,
+      value: String(value ?? ""),
+      status: "",
+      tone: "ok" as Tone,
+    }));
+  }
 
-  const warningIngredients: IngredientRow[] | undefined = Array.isArray(src.warningIngredients ?? src.warnings)
-    ? (src.warningIngredients ?? src.warnings).map((r: any) => ({
-        name: String(r.name ?? r.n ?? ""),
-        category: r.category ?? r.c,
-        info: r.info ?? r.i,
-        tone: (r.tone ?? "warn") as Tone,
-      }))
+  const warnSrc = src.warning_ingredients ?? src.warningIngredients ?? src.warnings;
+  const warningIngredients: IngredientRow[] | undefined = Array.isArray(warnSrc)
+    ? warnSrc.map((r: any) =>
+        typeof r === "string"
+          ? { name: r, tone: "warn" as Tone }
+          : {
+              name: String(r.name ?? r.n ?? ""),
+              category: r.category ?? r.c,
+              info: r.info ?? r.i ?? r.reason,
+              tone: (r.tone ?? "warn") as Tone,
+            }
+      )
     : undefined;
 
   return {
@@ -89,9 +103,9 @@ function normalize(input: any): AnalysisData | null {
     verdict: src.verdict as Verdict | undefined,
     verdictTitle: src.verdictTitle,
     verdictSub: src.verdictSub,
-    coach: src.coach ?? src.comment ?? src.aiComment,
+    coach: src.ai_comment ?? src.coach ?? src.comment ?? src.aiComment,
     nutrition,
-    ingredientsText: src.ingredientsText ?? src.rawIngredients,
+    ingredientsText: src.ingredients ?? src.ingredientsText ?? src.rawIngredients,
     warningIngredients,
     risk: src.risk,
     alternatives: Array.isArray(src.alternatives)
