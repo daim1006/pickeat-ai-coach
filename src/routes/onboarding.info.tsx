@@ -10,6 +10,17 @@ export const Route = createFileRoute("/onboarding/info")({
 
 const genders = ["여성", "남성"];
 
+function persistInfo(gender: string, ageNum: number) {
+  try {
+    const raw = localStorage.getItem("eatfit.user");
+    const prev = raw ? JSON.parse(raw) : {};
+    localStorage.setItem(
+      "eatfit.user",
+      JSON.stringify({ ...prev, gender, age: ageNum }),
+    );
+  } catch {}
+}
+
 function OnbInfo() {
   const [gender, setGender] = useState<string | null>(null);
   const [age, setAge] = useState<string>("");
