@@ -12,8 +12,6 @@ export const Route = createFileRoute("/history/")({
 const tabs = ["오늘", "전체"] as const;
 type Tab = (typeof tabs)[number];
 
-const periods = ["전체 기간", "오늘", "최근 7일", "최근 30일", "직접 선택"] as const;
-type Period = (typeof periods)[number];
 
 // Anchor dates relative to "today" so the demo data stays meaningful.
 const NOW = new Date();
