@@ -20,6 +20,11 @@ function focusLabel(sel: string[]) {
 function My() {
   const [restrictedCount, setRestrictedCount] = useState(0);
   const [focusDesc, setFocusDesc] = useState("선택 없음");
+  const [profile, setProfile] = useState<{ name: string; age: number | null; healthGoal: string | null }>({
+    name: "다임",
+    age: null,
+    healthGoal: null,
+  });
   useEffect(() => {
     const read = () => {
       try {
@@ -45,6 +50,17 @@ function My() {
       } catch {
         setFocusDesc("선택 없음");
       }
+      try {
+        const userRaw = localStorage.getItem("eatfit.user");
+        const goalRaw = localStorage.getItem("onboarding.healthGoal");
+        const user = userRaw ? JSON.parse(userRaw) : {};
+        const goal = goalRaw ? JSON.parse(goalRaw) : null;
+        setProfile({
+          name: user?.name ?? "다임",
+          age: typeof user?.age === "number" ? user.age : null,
+          healthGoal: goal?.label ?? null,
+        });
+      } catch {}
     };
     read();
     window.addEventListener("focus", read);
@@ -55,8 +71,10 @@ function My() {
     };
   }, []);
 
+  const goalDesc = profile.healthGoal ?? "체중 관리";
+
   const settings = [
-    { to: "/my/goal", icon: Target, label: "건강 목표", desc: "체중 관리" },
+    { to: "/my/goal", icon: Target, label: "건강 목표", desc: goalDesc },
     { to: "/my/focus", icon: Filter, label: "집중 관리 성분", desc: focusDesc },
     { to: "/my/restricted", icon: Ban, label: "피해야 할 성분", desc: restrictedCount === 0 ? "없음" : `${restrictedCount}개` },
     { to: "/my/subscription", icon: Crown, label: "구독 관리", desc: "Free 플랜" },
@@ -76,8 +94,12 @@ function My() {
             <User className="size-7" />
           </div>
           <div className="flex-1 min-w-0">
-            <div className="text-[16px] font-bold">다임님</div>
-            <div className="text-[12px] opacity-90">30대 · 체중 관리 중</div>
+            <div className="text-[16px] font-bold">{profile.name}님</div>
+            <div className="text-[12px] opacity-90">
+              {[profile.age ? `${profile.age}세` : null, profile.healthGoal ?? "체중 관리"]
+                .filter(Boolean)
+                .join(" · ")}
+            </div>
           </div>
           <Link to="/my/subscription" className="text-[11.5px] font-semibold bg-white/20 px-3 py-1.5 rounded-full">
             업그레이드

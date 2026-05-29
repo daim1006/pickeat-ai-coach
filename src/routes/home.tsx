@@ -45,6 +45,17 @@ const badge: Record<string, { label: string; cls: string }> = {
 function Home() {
   const [focus, setFocus] = useState<FocusItem[]>(DEFAULT_FOCUS);
   const [chips, setChips] = useState<string[]>([]);
+  const [userName, setUserName] = useState<string>("다임");
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("eatfit.user");
+      if (raw) {
+        const u = JSON.parse(raw);
+        if (u?.name) setUserName(String(u.name));
+      }
+    } catch {}
+  }, []);
   
 
   useEffect(() => {
@@ -91,7 +102,7 @@ function Home() {
       <header className="px-5 pt-4 pb-2 flex items-center justify-between">
         <div>
           <div className="text-[13px] text-muted-foreground">안녕하세요</div>
-          <h1 className="text-[20px] font-extrabold tracking-tight mt-0.5">다임님 👋</h1>
+          <h1 className="text-[20px] font-extrabold tracking-tight mt-0.5">{userName}님 👋</h1>
         </div>
         <Link to="/notifications" className="size-10 rounded-full bg-surface border border-border grid place-items-center" aria-label="알림">
           <Bell className="size-5" />

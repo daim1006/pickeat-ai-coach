@@ -10,6 +10,17 @@ export const Route = createFileRoute("/onboarding/info")({
 
 const genders = ["여성", "남성"];
 
+function persistInfo(gender: string, ageNum: number) {
+  try {
+    const raw = localStorage.getItem("eatfit.user");
+    const prev = raw ? JSON.parse(raw) : {};
+    localStorage.setItem(
+      "eatfit.user",
+      JSON.stringify({ ...prev, gender, age: ageNum }),
+    );
+  } catch {}
+}
+
 function OnbInfo() {
   const [gender, setGender] = useState<string | null>(null);
   const [age, setAge] = useState<string>("");
@@ -58,6 +69,9 @@ function OnbInfo() {
         <Link
           to="/onboarding/goal"
           aria-disabled={!ready}
+          onClick={() => {
+            if (ready && gender) persistInfo(gender, ageNum);
+          }}
           className={cn(
             "h-14 rounded-2xl text-base font-semibold grid place-items-center transition-all",
             ready ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground pointer-events-none"

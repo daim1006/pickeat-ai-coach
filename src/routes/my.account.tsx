@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { TopBar } from "@/components/TopBar";
 import { ChevronRight, LogOut, Trash2 } from "lucide-react";
@@ -8,11 +9,22 @@ export const Route = createFileRoute("/my/account")({
 });
 
 function Account() {
+  const [email, setEmail] = useState<string>("");
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("eatfit.user");
+      if (raw) {
+        const u = JSON.parse(raw);
+        if (u?.email) setEmail(String(u.email));
+      }
+    } catch {}
+  }, []);
+
   return (
     <AppShell>
       <TopBar title="계정 설정" />
       <div className="px-5 pt-2 space-y-2">
-        <Row label="이메일" value="daim@eatfit.app" />
+        <Row label="이메일" value={email || "—"} />
         <Row label="가입일" value="2025.03.14" />
         <Row label="이용약관" linkTo />
         <Row label="개인정보 처리방침" linkTo />

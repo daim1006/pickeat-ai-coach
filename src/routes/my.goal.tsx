@@ -1,5 +1,5 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { TopBar } from "@/components/TopBar";
 import { cn } from "@/lib/utils";
@@ -10,16 +10,39 @@ export const Route = createFileRoute("/my/goal")({
 });
 
 const goals = [
-  { id: "weight", label: "체중 관리", desc: "칼로리와 당류를 함께 봐드려요", icon: Scale },
-  { id: "blood", label: "혈당 관리", desc: "당류와 GI 영향 성분을 체크해요", icon: Droplet },
-  { id: "sodium", label: "나트륨 줄이기", desc: "숨은 나트륨까지 찾아드려요", icon: HeartPulse },
-  { id: "gut", label: "장 건강", desc: "식이섬유와 첨가물을 봐드려요", icon: Salad },
-  { id: "protein", label: "단백질 중심", desc: "단백질 비율을 우선 분석해요", icon: Dumbbell },
+  { id: "weight", label: "체중 관리", desc: "칼로리와 당류를 함께 봐드려요", icon: Scale, focus: ["당류", "포화지방", "나트륨"] },
+  { id: "blood", label: "혈당 관리", desc: "당류와 GI 영향 성분을 체크해요", icon: Droplet, focus: ["당류", "대체당", "카페인"] },
+  { id: "sodium", label: "나트륨 줄이기", desc: "숨은 나트륨까지 찾아드려요", icon: HeartPulse, focus: ["나트륨"] },
+  { id: "gut", label: "장 건강", desc: "식이섬유와 첨가물을 봐드려요", icon: Salad, focus: ["대체당", "첨가물"] },
+  { id: "protein", label: "단백질 중심", desc: "단백질 비율을 우선 분석해요", icon: Dumbbell, focus: ["단백질", "포화지방"] },
 ];
 
 function GoalEdit() {
   const router = useRouter();
   const [sel, setSel] = useState("weight");
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("onboarding.healthGoal");
+      if (raw) {
+        const g = JSON.parse(raw);
+        if (g?.id && goals.some((x) => x.id === g.id)) setSel(g.id);
+      }
+    } catch {}
+  }, []);
+
+  const handleSave = () => {
+    const picked = goals.find((g) => g.id === sel);
+    if (picked) {
+      try {
+        localStorage.setItem(
+          "onboarding.healthGoal",
+          JSON.stringify({ id: picked.id, label: picked.label, focus: picked.focus }),
+        );
+      } catch {}
+    }
+    router.history.back();
+  };
 
   return (
     <AppShell>
@@ -52,7 +75,7 @@ function GoalEdit() {
         </div>
         <div className="flex-1 min-h-6" />
         <button
-          onClick={() => router.history.back()}
+          onClick={handleSave}
           className="h-14 mt-6 rounded-2xl bg-primary text-primary-foreground text-base font-semibold"
         >
           저장
