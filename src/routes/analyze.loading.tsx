@@ -3,11 +3,13 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { Mascot } from "@/components/Mascot";
-import { scanNutrition, N8nError } from "@/lib/n8n";
+import { scanFood, N8nError } from "@/lib/n8n";
 
 export const Route = createFileRoute("/analyze/loading")({
   component: Loading,
 });
+
+const FAIL_MSG = "분석에 실패했어요. 다시 시도해주세요";
 
 function Loading() {
   const navigate = useNavigate();
@@ -18,7 +20,6 @@ function Loading() {
     if (ran.current) return;
     ran.current = true;
 
-    // Always clear any stale prior result before running this analysis.
     try {
       sessionStorage.removeItem("analyze.result");
       sessionStorage.removeItem("analyze.error");
@@ -31,45 +32,49 @@ function Loading() {
     };
     const nutritionImg = read("scan.image.nutrition");
     const ingredientsImg = read("scan.image.ingredients");
-    const productImg = read("scan.image.product");
-    const image = read("scan.image") ?? nutritionImg ?? ingredientsImg ?? productImg;
 
-    if (!image) {
-      const msg = "분석할 이미지가 없어요. 다시 촬영해주세요.";
-      setErrorMsg(msg);
-      toast.error(msg);
-      const t = setTimeout(() => navigate({ to: "/scan" }), 1500);
-      return () => clearTimeout(t);
+    if (!nutritionImg || !ingredientsImg) {
+      setErrorMsg(FAIL_MSG);
+      toast.error(FAIL_MSG);
+      return;
     }
 
-    const filename = sessionStorage.getItem("scan.filename") ?? `scan-${Date.now()}.jpg`;
-    const mimeType = sessionStorage.getItem("scan.mimeType") ?? "image/jpeg";
+    let userHealthGoal = "";
+    try {
+      const raw = localStorage.getItem("onboarding.healthGoal");
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        userHealthGoal = parsed?.label ?? parsed?.id ?? "";
+      }
+    } catch {
+      // ignore
+    }
 
     (async () => {
       try {
-        const result = await scanNutrition({
-          image,
-          filename,
-          mimeType,
-          nutritionImage: nutritionImg ?? undefined,
-          ingredientsImage: ingredientsImg ?? undefined,
-          productImage: productImg ?? undefined,
-        } as any);
+        const result = await scanFood({
+          image_nutrition: nutritionImg,
+          image_ingredients: ingredientsImg,
+          user_health_goal: userHealthGoal,
+        });
+        if (!result || result.success === false) {
+          setErrorMsg(FAIL_MSG);
+          toast.error(FAIL_MSG);
+          try { sessionStorage.setItem("analyze.error", FAIL_MSG); } catch {}
+          return;
+        }
         try {
-          sessionStorage.setItem("analyze.result", JSON.stringify(result ?? {}));
+          sessionStorage.setItem("analyze.result", JSON.stringify(result));
         } catch {
           // ignore
         }
         navigate({ to: "/analyze/result" });
       } catch (e) {
-        const msg = e instanceof N8nError ? e.message : "분석 요청에 실패했어요";
-        try {
-          sessionStorage.setItem("analyze.error", msg);
-        } catch {
-          // ignore
-        }
+        const msg = FAIL_MSG;
+        try { sessionStorage.setItem("analyze.error", msg); } catch {}
         setErrorMsg(msg);
         toast.error(msg);
+        void e;
       }
     })();
   }, [navigate]);
