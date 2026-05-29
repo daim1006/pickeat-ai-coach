@@ -24,7 +24,7 @@ interface AlternativeRow {
   tag?: string;
 }
 interface AnalysisData {
-  product?: { name?: string; brand?: string; tags?: string[] };
+  product?: { name?: string; brand?: string; foodType?: string; tags?: string[] };
   verdict?: Verdict;
   verdictTitle?: string;
   verdictSub?: string;
@@ -62,6 +62,7 @@ function normalize(input: any): AnalysisData | null {
   const product = src.product ?? {
     name: src.productName ?? src.name,
     brand: src.brand,
+    foodType: src.foodType ?? src.category ?? src.productType,
     tags: src.tags,
   };
 
@@ -84,7 +85,7 @@ function normalize(input: any): AnalysisData | null {
     : undefined;
 
   return {
-    product: product && (product.name || product.brand) ? product : undefined,
+    product: product ?? undefined,
     verdict: src.verdict as Verdict | undefined,
     verdictTitle: src.verdictTitle,
     verdictSub: src.verdictSub,
@@ -145,9 +146,9 @@ export function AnalysisView() {
       <section className="rounded-3xl p-4 bg-surface border border-border flex gap-3">
         <div className="size-14 rounded-2xl bg-gradient-to-br from-zinc-200 to-zinc-300 shrink-0" />
         <div className="flex-1 min-w-0">
-          <div className="text-[11.5px] text-muted-foreground">{data.product?.brand ?? "브랜드 정보 없음"}</div>
+          <div className="text-[11.5px] text-muted-foreground">{data.product?.foodType ?? "정보 없음"}</div>
           <div className="text-[15.5px] font-bold mt-0.5 truncate">
-            {data.product?.name ?? "제품명 확인 불가"}
+            {data.product?.name ?? "확인 불가"}
           </div>
           {data.product?.tags && data.product.tags.length > 0 && (
             <div className="mt-1.5 flex gap-1.5 flex-wrap">

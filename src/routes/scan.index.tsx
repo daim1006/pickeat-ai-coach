@@ -8,18 +8,26 @@ export const Route = createFileRoute("/scan/")({
   component: Scan,
 });
 
-type Step = 1 | 2;
+type Step = 1 | 2 | 3;
 
-const STEP_COPY: Record<Step, { label: string; title: string; description: string }> = {
+const STEP_COPY: Record<Step, { label: string; title: string; description: string; storageKey: string }> = {
   1: {
-    label: "원재료명 및 제품명",
-    title: "원재료명과 제품명을 촬영해주세요",
-    description: "제품명과 원재료명 및 함량이 함께 보이도록 촬영해주세요.",
+    label: "영양정보",
+    title: "영양정보 표를 스캔해주세요",
+    description: "영양성분표 전체가 잘 보이도록 촬영해주세요.",
+    storageKey: "scan.image.nutrition",
   },
   2: {
-    label: "영양성분표",
-    title: "영양성분표를 촬영해주세요",
-    description: "영양성분표 전체가 잘 보이도록 촬영해주세요.",
+    label: "원재료명",
+    title: "원재료명을 스캔해주세요",
+    description: "원재료명과 함량이 함께 보이도록 촬영해주세요.",
+    storageKey: "scan.image.ingredients",
+  },
+  3: {
+    label: "제품정보",
+    title: "제품명과 식품유형이 있는 부분을 스캔해주세요",
+    description: "제품명과 식품유형이 함께 보이도록 촬영해주세요.",
+    storageKey: "scan.image.product",
   },
 };
 
@@ -39,6 +47,7 @@ function Scan() {
       sessionStorage.removeItem("scan.image");
       sessionStorage.removeItem("scan.image.ingredients");
       sessionStorage.removeItem("scan.image.nutrition");
+      sessionStorage.removeItem("scan.image.product");
       sessionStorage.removeItem("scan.mimeType");
       sessionStorage.removeItem("scan.filename");
     } catch {
@@ -162,29 +171,30 @@ function Scan() {
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
       if (!dataUrl || dataUrl.length < 100) {
-        toast.error("이미지 캡처에 실패했어요");
+        toast.error("인식하지 못했어요. 다시 시도해주세요");
         setCapturing(false);
         return;
       }
 
-      if (step === 1) {
-        try {
-          sessionStorage.setItem("scan.image.ingredients", dataUrl);
-        } catch (e) {
-          console.warn("sessionStorage write failed", e);
-        }
-        setStep(2);
+      const current = STEP_COPY[step];
+      try {
+        sessionStorage.setItem(current.storageKey, dataUrl);
+      } catch (e) {
+        console.warn("sessionStorage write failed", e);
+      }
+
+      if (step < 3) {
+        setStep((step + 1) as Step);
         setCapturing(false);
         return;
       }
 
-      // step === 2
+      // Final step → start analysis. Keep `scan.image` as primary (nutrition) for compatibility.
       try {
         sessionStorage.removeItem("analyze.result");
         sessionStorage.removeItem("analyze.error");
-        sessionStorage.setItem("scan.image.nutrition", dataUrl);
-        // Keep `scan.image` as the primary (nutrition) image for compatibility.
-        sessionStorage.setItem("scan.image", dataUrl);
+        const nutrition = sessionStorage.getItem("scan.image.nutrition");
+        sessionStorage.setItem("scan.image", nutrition ?? dataUrl);
         sessionStorage.setItem("scan.mimeType", "image/jpeg");
         sessionStorage.setItem("scan.filename", `scan-${Date.now()}.jpg`);
       } catch (e) {
@@ -193,7 +203,7 @@ function Scan() {
       navigate({ to: "/analyze/loading" });
     } catch (e) {
       console.error(e);
-      toast.error("촬영 중 오류가 발생했어요");
+      toast.error("인식하지 못했어요. 다시 시도해주세요");
       setCapturing(false);
     }
   };
@@ -209,13 +219,23 @@ function Scan() {
             <X className="size-5" />
           </button>
           <div className="flex flex-col items-center">
-            <span className="text-[11px] font-medium text-white/70">{step}/2</span>
+            <span className="text-[11px] font-medium text-white/70">{step}/3</span>
             <span className="text-[13px] font-semibold">{copy.label}</span>
           </div>
           <Link to="/scan/guide" className="size-10 grid place-items-center rounded-full bg-white/10" aria-label="가이드">
             <HelpCircle className="size-5" />
           </Link>
         </header>
+
+        {/* step progress dots */}
+        <div className="flex items-center justify-center gap-1.5 mt-2">
+          {[1, 2, 3].map((i) => (
+            <span
+              key={i}
+              className={`h-1 rounded-full transition-all ${i === step ? "w-6 bg-primary" : i < step ? "w-3 bg-primary/60" : "w-3 bg-white/20"}`}
+            />
+          ))}
+        </div>
 
         {/* title/description */}
         <div className="px-6 pt-3 text-center">
