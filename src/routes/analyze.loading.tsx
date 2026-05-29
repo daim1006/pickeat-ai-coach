@@ -26,13 +26,13 @@ function Loading() {
       // ignore
     }
 
-    const image = (() => {
-      try {
-        return sessionStorage.getItem("scan.image");
-      } catch {
-        return null;
-      }
-    })();
+    const read = (k: string) => {
+      try { return sessionStorage.getItem(k); } catch { return null; }
+    };
+    const nutritionImg = read("scan.image.nutrition");
+    const ingredientsImg = read("scan.image.ingredients");
+    const productImg = read("scan.image.product");
+    const image = read("scan.image") ?? nutritionImg ?? ingredientsImg ?? productImg;
 
     if (!image) {
       const msg = "분석할 이미지가 없어요. 다시 촬영해주세요.";
@@ -47,7 +47,14 @@ function Loading() {
 
     (async () => {
       try {
-        const result = await scanNutrition({ image, filename, mimeType });
+        const result = await scanNutrition({
+          image,
+          filename,
+          mimeType,
+          nutritionImage: nutritionImg ?? undefined,
+          ingredientsImage: ingredientsImg ?? undefined,
+          productImage: productImg ?? undefined,
+        } as any);
         try {
           sessionStorage.setItem("analyze.result", JSON.stringify(result ?? {}));
         } catch {
