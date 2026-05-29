@@ -137,11 +137,3 @@ function My() {
   );
 }
 
-function Stat({ n, l }: { n: string; l: string }) {
-  return (
-    <div className="bg-white/15 rounded-2xl py-2.5">
-      <div className="text-[18px] font-extrabold">{n}</div>
-      <div className="text-[10.5px] opacity-90">{l}</div>
-    </div>
-  );
-}
