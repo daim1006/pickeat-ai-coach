@@ -215,11 +215,16 @@ function Scan() {
             <ImageIcon className="size-5" />
           </Link>
           <button
-            onClick={() => navigate({ to: "/analyze/loading" })}
+            onClick={handleCapture}
+            disabled={capturing}
             aria-label="촬영"
-            className="size-20 rounded-full bg-white grid place-items-center active:scale-95 transition-transform"
+            className="size-20 rounded-full bg-white grid place-items-center active:scale-95 transition-transform disabled:opacity-70"
           >
-            <span className="size-16 rounded-full border-4 border-zinc-900" />
+            {capturing ? (
+              <Loader2 className="size-7 text-zinc-900 animate-spin" />
+            ) : (
+              <span className="size-16 rounded-full border-4 border-zinc-900" />
+            )}
           </button>
           <div className="size-12" />
         </footer>
