@@ -62,6 +62,7 @@ function normalize(input: any): AnalysisData | null {
   const product = src.product ?? {
     name: src.productName ?? src.name,
     brand: src.brand,
+    foodType: src.foodType ?? src.category ?? src.productType,
     tags: src.tags,
   };
 
