@@ -1,8 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { TopBar } from "@/components/TopBar";
-import { AnalysisView } from "@/components/AnalysisView";
+import { AnalysisView, normalizeAnalysis, type AnalysisData } from "@/components/AnalysisView";
 import { saveIntake, saveScan, N8nError } from "@/lib/n8n";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -11,7 +12,7 @@ export const Route = createFileRoute("/analyze/result")({
   component: Result,
 });
 
-function readAnalysis(): unknown {
+function readAnalysisRaw(): unknown {
   try {
     const raw = sessionStorage.getItem("analyze.result");
     return raw ? JSON.parse(raw) : null;
@@ -24,12 +25,24 @@ function Result() {
   const navigate = useNavigate();
   const [busy, setBusy] = useState<null | "eat" | "save">(null);
   const [error, setError] = useState<string | null>(null);
+  // Read ONCE on mount so we never display stale data from a prior scan
+  // that might be written after this page has already rendered.
+  const [analysis, setAnalysis] = useState<AnalysisData | null | undefined>(undefined);
+
+  useEffect(() => {
+    const raw = readAnalysisRaw();
+    if (!raw) {
+      toast.error("분석 결과가 없어요. 다시 촬영해 주세요.");
+      navigate({ to: "/scan" });
+      return;
+    }
+    setAnalysis(normalizeAnalysis(raw));
+  }, [navigate]);
 
   const handle = async (mode: "eat" | "save") => {
     if (busy) return;
     setBusy(mode);
     setError(null);
-    const analysis = readAnalysis();
     const payload = { analysis, savedAt: new Date().toISOString() };
     try {
       const tasks: Promise<unknown>[] = [saveScan(payload)];
@@ -42,11 +55,22 @@ function Result() {
     }
   };
 
+  if (analysis === undefined) {
+    return (
+      <AppShell>
+        <TopBar title="분석 결과" onBack={() => navigate({ to: "/home" })} />
+        <div className="flex-1 grid place-items-center py-20 text-muted-foreground text-[13px]">
+          <Loader2 className="size-5 animate-spin" />
+        </div>
+      </AppShell>
+    );
+  }
+
   return (
     <AppShell>
       <TopBar title="분석 결과" onBack={() => navigate({ to: "/home" })} />
 
-      <AnalysisView />
+      <AnalysisView data={analysis} />
 
       <div className="sticky bottom-0 bg-background/95 backdrop-blur px-5 pt-3 pb-6 border-t border-border">
         {error && <p className="mb-2 text-[12px] text-destructive">{error}</p>}
