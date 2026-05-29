@@ -104,7 +104,7 @@ function FocusEdit() {
 
   const handleDone = () => {
     persist();
-    router.navigate({ to: "/my" });
+    router.history.back();
   };
 
   return (
