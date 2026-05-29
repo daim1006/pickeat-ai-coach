@@ -227,7 +227,7 @@ function Home() {
                     <div className="size-12 rounded-xl bg-muted shrink-0" />
                     <div className="flex-1 min-w-0">
                       <div className="text-[14px] font-semibold truncate">{e.name}</div>
-                      <div className="text-[11.5px] text-muted-foreground">{e.brand} · {e.time}</div>
+                      <div className="text-[11.5px] text-muted-foreground">{e.foodType} · {e.time}</div>
                     </div>
                     <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full ${b.cls}`}>{b.label}</span>
                   </Link>
