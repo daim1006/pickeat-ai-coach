@@ -213,7 +213,7 @@ function Scan() {
             <X className="size-5" />
           </button>
           <div className="flex flex-col items-center">
-            <span className="text-[11px] font-medium text-white/70">{step}/3</span>
+            <span className="text-[11px] font-medium text-white/70">{step}/2</span>
             <span className="text-[13px] font-semibold">{copy.label}</span>
           </div>
           <Link to="/scan/guide" className="size-10 grid place-items-center rounded-full bg-white/10" aria-label="가이드">
@@ -223,7 +223,7 @@ function Scan() {
 
         {/* step progress dots */}
         <div className="flex items-center justify-center gap-1.5 mt-2">
-          {[1, 2, 3].map((i) => (
+          {[1, 2].map((i) => (
             <span
               key={i}
               className={`h-1 rounded-full transition-all ${i === step ? "w-6 bg-primary" : i < step ? "w-3 bg-primary/60" : "w-3 bg-white/20"}`}
