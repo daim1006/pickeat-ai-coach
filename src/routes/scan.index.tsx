@@ -8,12 +8,28 @@ export const Route = createFileRoute("/scan/")({
   component: Scan,
 });
 
+type Step = 1 | 2;
+
+const STEP_COPY: Record<Step, { label: string; title: string; description: string }> = {
+  1: {
+    label: "원재료명 및 제품명",
+    title: "원재료명과 제품명을 촬영해주세요",
+    description: "제품명과 원재료명 및 함량이 함께 보이도록 촬영해주세요.",
+  },
+  2: {
+    label: "영양성분표",
+    title: "영양성분표를 촬영해주세요",
+    description: "영양성분표 전체가 잘 보이도록 촬영해주세요.",
+  },
+};
+
 function Scan() {
   const navigate = useNavigate();
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [capturing, setCapturing] = useState(false);
+  const [step, setStep] = useState<Step>(1);
 
   // Clear any prior scan/analysis state so a new session starts fresh.
   useEffect(() => {
@@ -21,6 +37,8 @@ function Scan() {
       sessionStorage.removeItem("analyze.result");
       sessionStorage.removeItem("analyze.error");
       sessionStorage.removeItem("scan.image");
+      sessionStorage.removeItem("scan.image.ingredients");
+      sessionStorage.removeItem("scan.image.nutrition");
       sessionStorage.removeItem("scan.mimeType");
       sessionStorage.removeItem("scan.filename");
     } catch {
@@ -148,10 +166,24 @@ function Scan() {
         setCapturing(false);
         return;
       }
+
+      if (step === 1) {
+        try {
+          sessionStorage.setItem("scan.image.ingredients", dataUrl);
+        } catch (e) {
+          console.warn("sessionStorage write failed", e);
+        }
+        setStep(2);
+        setCapturing(false);
+        return;
+      }
+
+      // step === 2
       try {
-        // Reset any prior result, then store the fresh image for the loading step.
         sessionStorage.removeItem("analyze.result");
         sessionStorage.removeItem("analyze.error");
+        sessionStorage.setItem("scan.image.nutrition", dataUrl);
+        // Keep `scan.image` as the primary (nutrition) image for compatibility.
         sessionStorage.setItem("scan.image", dataUrl);
         sessionStorage.setItem("scan.mimeType", "image/jpeg");
         sessionStorage.setItem("scan.filename", `scan-${Date.now()}.jpg`);
@@ -166,6 +198,8 @@ function Scan() {
     }
   };
 
+  const copy = STEP_COPY[step];
+
   return (
     <AppShell>
       <div className="relative flex-1 min-h-screen bg-[#0c0d0f] text-white flex flex-col">
@@ -174,10 +208,20 @@ function Scan() {
           <button onClick={() => navigate({ to: "/home" })} aria-label="닫기" className="size-10 grid place-items-center rounded-full bg-white/10">
             <X className="size-5" />
           </button>
+          <div className="flex flex-col items-center">
+            <span className="text-[11px] font-medium text-white/70">{step}/2</span>
+            <span className="text-[13px] font-semibold">{copy.label}</span>
+          </div>
           <Link to="/scan/guide" className="size-10 grid place-items-center rounded-full bg-white/10" aria-label="가이드">
             <HelpCircle className="size-5" />
           </Link>
         </header>
+
+        {/* title/description */}
+        <div className="px-6 pt-3 text-center">
+          <h2 className="text-[16px] font-bold leading-snug">{copy.title}</h2>
+          <p className="mt-1 text-[12px] text-white/70 leading-relaxed">{copy.description}</p>
+        </div>
 
         {/* camera viewport */}
         <div className="flex-1 relative flex items-center justify-center px-6">
@@ -197,9 +241,6 @@ function Scan() {
             )}
             {/* corner frame */}
             <Corners />
-            <div className="absolute inset-x-0 top-6 text-center text-[13px] font-medium text-white/90">
-              영양정보와 원재료명이 잘 보이게 찍어주세요
-            </div>
             <div className="absolute inset-x-0 bottom-6 flex justify-center">
               <span className="inline-flex items-center gap-1 text-[11px] font-medium px-3 py-1.5 rounded-full bg-black/40 backdrop-blur">
                 <Zap className="size-3" /> 자동 인식 중
