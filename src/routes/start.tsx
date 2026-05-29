@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { Logo } from "@/components/Logo";
 import { Mascot } from "@/components/Mascot";
@@ -8,6 +8,7 @@ export const Route = createFileRoute("/start")({
 });
 
 function Start() {
+  const navigate = useNavigate();
   return (
     <AppShell>
       <div className="flex-1 flex flex-col px-6 pt-16 pb-10">
@@ -29,7 +30,10 @@ function Start() {
           >
             시작하기
           </Link>
-          <button className="block w-full h-14 rounded-2xl bg-surface border border-border text-sm font-medium text-foreground active:bg-muted">
+          <button
+            onClick={() => navigate({ to: "/login" })}
+            className="block w-full h-14 rounded-2xl bg-surface border border-border text-sm font-medium text-foreground active:bg-muted"
+          >
             이미 계정이 있어요
           </button>
           <p className="text-[11px] text-center text-muted-foreground pt-2">
