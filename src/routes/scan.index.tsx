@@ -13,6 +13,20 @@ function Scan() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [capturing, setCapturing] = useState(false);
+
+  // Clear any prior scan/analysis state so a new session starts fresh.
+  useEffect(() => {
+    try {
+      sessionStorage.removeItem("analyze.result");
+      sessionStorage.removeItem("analyze.error");
+      sessionStorage.removeItem("scan.image");
+      sessionStorage.removeItem("scan.mimeType");
+      sessionStorage.removeItem("scan.filename");
+    } catch {
+      // ignore
+    }
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -109,6 +123,49 @@ function Scan() {
     };
   }, []);
 
+  const handleCapture = () => {
+    if (capturing) return;
+    const video = videoRef.current;
+    if (!video || !streamRef.current || video.readyState < 2 || !video.videoWidth) {
+      toast.error("카메라가 아직 준비되지 않았어요");
+      return;
+    }
+    try {
+      setCapturing(true);
+      const canvas = document.createElement("canvas");
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        toast.error("이미지를 캡처할 수 없어요");
+        setCapturing(false);
+        return;
+      }
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
+      if (!dataUrl || dataUrl.length < 100) {
+        toast.error("이미지 캡처에 실패했어요");
+        setCapturing(false);
+        return;
+      }
+      try {
+        // Reset any prior result, then store the fresh image for the loading step.
+        sessionStorage.removeItem("analyze.result");
+        sessionStorage.removeItem("analyze.error");
+        sessionStorage.setItem("scan.image", dataUrl);
+        sessionStorage.setItem("scan.mimeType", "image/jpeg");
+        sessionStorage.setItem("scan.filename", `scan-${Date.now()}.jpg`);
+      } catch (e) {
+        console.warn("sessionStorage write failed", e);
+      }
+      navigate({ to: "/analyze/loading" });
+    } catch (e) {
+      console.error(e);
+      toast.error("촬영 중 오류가 발생했어요");
+      setCapturing(false);
+    }
+  };
+
   return (
     <AppShell>
       <div className="relative flex-1 min-h-screen bg-[#0c0d0f] text-white flex flex-col">
@@ -157,9 +214,10 @@ function Scan() {
             <ImageIcon className="size-5" />
           </Link>
           <button
-            onClick={() => navigate({ to: "/analyze/loading" })}
+            onClick={handleCapture}
+            disabled={capturing || !!errorMsg}
             aria-label="촬영"
-            className="size-20 rounded-full bg-white grid place-items-center active:scale-95 transition-transform"
+            className="size-20 rounded-full bg-white grid place-items-center active:scale-95 transition-transform disabled:opacity-60"
           >
             <span className="size-16 rounded-full border-4 border-zinc-900" />
           </button>

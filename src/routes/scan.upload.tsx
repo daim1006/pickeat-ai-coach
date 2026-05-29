@@ -1,10 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { TopBar } from "@/components/TopBar";
 import { ImagePlus, RotateCcw, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { scanNutrition, N8nError } from "@/lib/n8n";
 
 export const Route = createFileRoute("/scan/upload")({
   component: ScanUpload,
@@ -28,6 +27,19 @@ function ScanUpload() {
   const [error, setError] = useState<string | null>(null);
   const picked = !!file;
 
+  // Clear any prior scan/analysis state when entering upload.
+  useEffect(() => {
+    try {
+      sessionStorage.removeItem("analyze.result");
+      sessionStorage.removeItem("analyze.error");
+      sessionStorage.removeItem("scan.image");
+      sessionStorage.removeItem("scan.mimeType");
+      sessionStorage.removeItem("scan.filename");
+    } catch {
+      // ignore
+    }
+  }, []);
+
   const onPick = async (f: File | null) => {
     if (!f) return;
     setFile(f);
@@ -45,19 +57,23 @@ function ScanUpload() {
     setError(null);
     try {
       const image = preview ?? (await fileToDataUrl(file));
-      const result = await scanNutrition({
-        image,
-        filename: file.name,
-        mimeType: file.type,
-      });
+      if (!image) {
+        setError("이미지를 읽을 수 없어요");
+        setSubmitting(false);
+        return;
+      }
       try {
-        sessionStorage.setItem("analyze.result", JSON.stringify(result ?? {}));
+        sessionStorage.removeItem("analyze.result");
+        sessionStorage.removeItem("analyze.error");
+        sessionStorage.setItem("scan.image", image);
+        sessionStorage.setItem("scan.mimeType", file.type || "image/jpeg");
+        sessionStorage.setItem("scan.filename", file.name || `upload-${Date.now()}.jpg`);
       } catch {
         // ignore storage errors
       }
       navigate({ to: "/analyze/loading" });
-    } catch (e) {
-      setError(e instanceof N8nError ? e.message : "분석 요청에 실패했어요");
+    } catch {
+      setError("분석 요청을 시작할 수 없어요");
       setSubmitting(false);
     }
   };
