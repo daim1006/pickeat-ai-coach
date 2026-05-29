@@ -30,12 +30,25 @@ function Loading() {
     const read = (k: string) => {
       try { return sessionStorage.getItem(k); } catch { return null; }
     };
-    const nutritionImg = read("scan.image.nutrition");
-    const ingredientsImg = read("scan.image.ingredients");
+    const stripDataUrl = (s: string | null) => {
+      if (!s) return "";
+      const cleaned = s.trim();
+      if (cleaned.startsWith("data:") && cleaned.includes(",")) {
+        return cleaned.split(",")[1] ?? "";
+      }
+      return cleaned;
+    };
+    const image_nutrition = stripDataUrl(read("scan.image.nutrition"));
+    const image_ingredients = stripDataUrl(read("scan.image.ingredients"));
 
-    if (!nutritionImg || !ingredientsImg) {
-      setErrorMsg(FAIL_MSG);
-      toast.error(FAIL_MSG);
+    console.log("image_nutrition 길이:", image_nutrition?.length);
+    console.log("image_ingredients 길이:", image_ingredients?.length);
+
+    if (!image_nutrition || !image_ingredients) {
+      const msg = "이미지 촬영을 다시 시도해주세요";
+      setErrorMsg(msg);
+      toast.error(msg);
+      try { sessionStorage.setItem("analyze.error", msg); } catch {}
       return;
     }
 
@@ -53,8 +66,8 @@ function Loading() {
     (async () => {
       try {
         const result = await scanFood({
-          image_nutrition: nutritionImg,
-          image_ingredients: ingredientsImg,
+          image_nutrition,
+          image_ingredients,
           user_health_goal: userHealthGoal,
         });
         if (!result || result.success === false) {
