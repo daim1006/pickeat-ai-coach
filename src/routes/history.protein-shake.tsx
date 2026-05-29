@@ -22,7 +22,7 @@ function ProteinShakeDetail() {
         <section className="rounded-3xl p-4 bg-surface border border-border flex gap-3">
           <div className="size-14 rounded-2xl bg-gradient-to-br from-zinc-200 to-zinc-300 shrink-0" />
           <div className="flex-1 min-w-0">
-            <div className="text-[11.5px] text-muted-foreground">마이프로틴</div>
+            <div className="text-[11.5px] text-muted-foreground">단백질 가공식품 · 어제 19:40</div>
             <div className="text-[15.5px] font-bold mt-0.5 truncate">단백질 쉐이크</div>
             <div className="mt-1.5 flex gap-1.5 items-center">
               <Tag>단백질</Tag>
