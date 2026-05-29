@@ -105,11 +105,12 @@ function My() {
             업그레이드
           </Link>
         </div>
-        <div className="mt-4 grid grid-cols-3 gap-2 text-center">
-          <Stat n="42" l="스캔" />
-          <Stat n="28" l="저장" />
-          <Stat n="14" l="대체 추천" />
-        </div>
+        <Link
+          to="/my/account"
+          className="mt-4 block w-full text-center bg-white/20 rounded-2xl py-3 text-[13px] font-semibold"
+        >
+          프로필 관리
+        </Link>
       </section>
 
       <ul className="px-5 mt-5 space-y-2 pb-6">
