@@ -99,7 +99,7 @@ function History() {
             return {
               id: String(o.id ?? `r-${i}`),
               name: String(o.name ?? "기록"),
-              brand: String(o.brand ?? ""),
+              foodType: String(o.foodType ?? o.food_type ?? o.brand ?? ""),
               status,
               date: d,
             } satisfies Item;
@@ -219,7 +219,7 @@ function Row({ d }: { d: Item }) {
         <div className="size-14 rounded-xl bg-muted shrink-0" />
         <div className="flex-1 min-w-0">
           <div className="text-[14.5px] font-semibold truncate">{d.name}</div>
-          <div className="text-[12px] text-muted-foreground">{d.brand}</div>
+          <div className="text-[12px] text-muted-foreground">{d.foodType}</div>
           <div className="text-[11px] text-muted-foreground mt-0.5">{timeLabel(d.date)}</div>
         </div>
         <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full ${b.c}`}>{b.l}</span>
