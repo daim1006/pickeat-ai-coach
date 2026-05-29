@@ -302,8 +302,8 @@ function Row({ d }: { d: Item }) {
 
 function EmptyState() {
   return (
-    <li className="text-center text-[13px] text-muted-foreground py-10">
-      해당 기간에 기록이 없어요
+    <li className="text-center text-[13px] text-muted-foreground py-10 list-none">
+      해당 기간의 기록이 없어요
     </li>
   );
 }
