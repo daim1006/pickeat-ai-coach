@@ -18,8 +18,8 @@ const STEP_COPY: Record<Step, { label: string; title: string; description: strin
     storageKey: "scan.image.nutrition",
   },
   2: {
-    label: "원재료명",
-    title: "원재료명을 스캔해주세요",
+    label: "원재료명 및 함량",
+    title: "원재료표를 스캔해주세요",
     description: "원재료명과 함량이 함께 보이도록 촬영해주세요.",
     storageKey: "scan.image.ingredients",
   },
