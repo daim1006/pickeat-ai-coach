@@ -94,8 +94,12 @@ function My() {
             <User className="size-7" />
           </div>
           <div className="flex-1 min-w-0">
-            <div className="text-[16px] font-bold">다임님</div>
-            <div className="text-[12px] opacity-90">30대 · 체중 관리 중</div>
+            <div className="text-[16px] font-bold">{profile.name}님</div>
+            <div className="text-[12px] opacity-90">
+              {[profile.age ? `${profile.age}세` : null, profile.healthGoal ?? "체중 관리"]
+                .filter(Boolean)
+                .join(" · ")}
+            </div>
           </div>
           <Link to="/my/subscription" className="text-[11.5px] font-semibold bg-white/20 px-3 py-1.5 rounded-full">
             업그레이드
