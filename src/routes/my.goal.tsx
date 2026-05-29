@@ -75,7 +75,7 @@ function GoalEdit() {
         </div>
         <div className="flex-1 min-h-6" />
         <button
-          onClick={() => router.history.back()}
+          onClick={handleSave}
           className="h-14 mt-6 rounded-2xl bg-primary text-primary-foreground text-base font-semibold"
         >
           저장
