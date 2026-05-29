@@ -20,6 +20,18 @@ const suggestions = [
 interface Msg { role: "user" | "ai"; text: string }
 
 function extractReply(res: unknown): string {
+  // DEBUG: n8n 응답이 그대로 표시되는 이슈 추적용
+  console.log("[chat] extractReply raw response:", res);
+  console.log("[chat] typeof:", typeof res, "isArray:", Array.isArray(res));
+  try {
+    console.log("[chat] JSON:", JSON.stringify(res, null, 2));
+  } catch {
+    console.log("[chat] (응답을 JSON으로 직렬화할 수 없음)");
+  }
+  if (res && typeof res === "object") {
+    console.log("[chat] keys:", Object.keys(res as Record<string, unknown>));
+  }
+
   if (!res) return "응답을 받지 못했어요.";
   if (typeof res === "string") return res;
   if (typeof res === "object") {
