@@ -61,28 +61,6 @@ function isSameDay(a: Date, b: Date) {
   );
 }
 
-function startOfWeek(d: Date) {
-  // Monday-based week
-  const x = new Date(d);
-  const day = x.getDay(); // 0=Sun..6=Sat
-  const diff = (day + 6) % 7;
-  x.setHours(0, 0, 0, 0);
-  x.setDate(x.getDate() - diff);
-  return x;
-}
-
-function weekLabel(start: Date) {
-  const end = new Date(start);
-  end.setDate(end.getDate() + 6);
-  const sow = startOfWeek(new Date());
-  if (start.getTime() === sow.getTime()) return "이번주";
-  const lastWeek = new Date(sow);
-  lastWeek.setDate(lastWeek.getDate() - 7);
-  if (start.getTime() === lastWeek.getTime()) return "지난주";
-  const fmt = (d: Date) => `${d.getMonth() + 1}.${d.getDate()}`;
-  return `${fmt(start)} – ${fmt(end)}`;
-}
-
 function timeLabel(d: Date) {
   const now = new Date();
   const hh = String(d.getHours()).padStart(2, "0");
