@@ -10,7 +10,7 @@ export const Route = createFileRoute("/scan/guide")({
 const tips = [
   "밝은 곳에서 찍어주세요.",
   "글자가 흐리지 않게 가까이서 찍어주세요.",
-  "원재료명과 영양성분표가 화면 안에 모두 들어오도록 촬영해주세요.",
+  "원재료표와 영양성분표가 화면 안에 모두 들어오도록\n촬영해주세요.",
 ];
 
 function ScanGuide() {
@@ -30,7 +30,7 @@ function ScanGuide() {
         <ul className="space-y-2.5">
           {tips.map((t, i) => (
             <li key={i} className="flex gap-3 p-4 rounded-2xl bg-surface border border-border">
-              <div className="size-6 rounded-full bg-primary text-primary-foreground grid place-items-center text-[11px] font-bold shrink-0">
+              <div className="size-6 rounded-full bg-primary text-primary-foreground grid place-items-center text-[11px] font-bold shrink-0 py-0">
                 {i + 1}
               </div>
               <p className="text-[13.5px] leading-relaxed">{t}</p>
