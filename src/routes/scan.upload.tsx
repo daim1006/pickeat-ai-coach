@@ -32,6 +32,12 @@ function ScanUpload() {
     if (!f) return;
     setFile(f);
     setError(null);
+    // Reset any previous analysis the moment the user picks a new image.
+    try {
+      sessionStorage.removeItem("analyze.result");
+    } catch {
+      // ignore
+    }
     try {
       setPreview(await fileToDataUrl(f));
     } catch {
@@ -43,8 +49,18 @@ function ScanUpload() {
     if (!file || submitting) return;
     setSubmitting(true);
     setError(null);
+    // Clear again right before the new request so the loading/result screens
+    // can never observe stale data.
+    try {
+      sessionStorage.removeItem("analyze.result");
+    } catch {
+      // ignore
+    }
     try {
       const image = preview ?? (await fileToDataUrl(file));
+      if (!image) {
+        throw new N8nError("이미지를 읽을 수 없어요. 다시 선택해 주세요.");
+      }
       const result = await scanNutrition({
         image,
         filename: file.name,

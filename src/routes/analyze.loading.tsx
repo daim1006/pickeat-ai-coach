@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
+import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { Mascot } from "@/components/Mascot";
 
@@ -9,9 +10,38 @@ export const Route = createFileRoute("/analyze/loading")({
 
 function Loading() {
   const navigate = useNavigate();
+
   useEffect(() => {
-    const t = setTimeout(() => navigate({ to: "/analyze/result" }), 2400);
-    return () => clearTimeout(t);
+    let cancelled = false;
+    const start = Date.now();
+    const MIN_MS = 1200;
+    const MAX_MS = 30_000;
+
+    const tick = () => {
+      if (cancelled) return;
+      let hasResult = false;
+      try {
+        hasResult = !!sessionStorage.getItem("analyze.result");
+      } catch {
+        hasResult = false;
+      }
+      const elapsed = Date.now() - start;
+      if (hasResult && elapsed >= MIN_MS) {
+        navigate({ to: "/analyze/result" });
+        return;
+      }
+      if (elapsed >= MAX_MS) {
+        toast.error("분석에 시간이 너무 오래 걸려요. 다시 시도해 주세요.");
+        navigate({ to: "/scan" });
+        return;
+      }
+      setTimeout(tick, 200);
+    };
+    tick();
+
+    return () => {
+      cancelled = true;
+    };
   }, [navigate]);
 
   return (

@@ -2,7 +2,8 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
-import { X, ImageIcon, HelpCircle, Zap } from "lucide-react";
+import { X, ImageIcon, HelpCircle, Zap, Loader2 } from "lucide-react";
+import { scanNutrition, N8nError } from "@/lib/n8n";
 
 export const Route = createFileRoute("/scan/")({
   component: Scan,
@@ -13,6 +14,7 @@ function Scan() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [capturing, setCapturing] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -108,6 +110,62 @@ function Scan() {
       if (videoRef.current) videoRef.current.srcObject = null;
     };
   }, []);
+  const handleCapture = async () => {
+    if (capturing) return;
+    const video = videoRef.current;
+    if (!video || !video.videoWidth || !video.videoHeight) {
+      const msg = "카메라가 아직 준비되지 않았어요. 잠시 후 다시 시도해 주세요.";
+      setErrorMsg(msg);
+      toast.error(msg);
+      return;
+    }
+
+    // Reset any previous analysis result BEFORE we start the new request
+    // so loading/result screens cannot read stale data.
+    try {
+      sessionStorage.removeItem("analyze.result");
+    } catch {
+      // ignore
+    }
+
+    setCapturing(true);
+    try {
+      const canvas = document.createElement("canvas");
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) throw new N8nError("이미지를 캡처하지 못했어요.");
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const image = canvas.toDataURL("image/jpeg", 0.9);
+      if (!image || image === "data:,") {
+        throw new N8nError("이미지를 캡처하지 못했어요.");
+      }
+
+      // Navigate to the loading screen immediately; it polls sessionStorage
+      // and will move to the result page only after the response is stored.
+      navigate({ to: "/analyze/loading" });
+
+      try {
+        const result = await scanNutrition({
+          image,
+          filename: `scan-${Date.now()}.jpg`,
+          mimeType: "image/jpeg",
+        });
+        sessionStorage.setItem("analyze.result", JSON.stringify(result ?? {}));
+      } catch (e) {
+        const msg = e instanceof N8nError ? e.message : "분석 요청에 실패했어요";
+        toast.error(msg);
+        navigate({ to: "/scan" });
+      }
+    } catch (e) {
+      const msg = e instanceof N8nError ? e.message : "촬영에 실패했어요";
+      setErrorMsg(msg);
+      toast.error(msg);
+    } finally {
+      setCapturing(false);
+    }
+  };
+
 
   return (
     <AppShell>
@@ -157,11 +215,16 @@ function Scan() {
             <ImageIcon className="size-5" />
           </Link>
           <button
-            onClick={() => navigate({ to: "/analyze/loading" })}
+            onClick={handleCapture}
+            disabled={capturing}
             aria-label="촬영"
-            className="size-20 rounded-full bg-white grid place-items-center active:scale-95 transition-transform"
+            className="size-20 rounded-full bg-white grid place-items-center active:scale-95 transition-transform disabled:opacity-70"
           >
-            <span className="size-16 rounded-full border-4 border-zinc-900" />
+            {capturing ? (
+              <Loader2 className="size-7 text-zinc-900 animate-spin" />
+            ) : (
+              <span className="size-16 rounded-full border-4 border-zinc-900" />
+            )}
           </button>
           <div className="size-12" />
         </footer>
