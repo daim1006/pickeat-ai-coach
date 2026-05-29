@@ -93,9 +93,9 @@ function Home() {
           <div className="text-[13px] text-muted-foreground">안녕하세요</div>
           <h1 className="text-[20px] font-extrabold tracking-tight mt-0.5">다임님 👋</h1>
         </div>
-        <button className="size-10 rounded-full bg-surface border border-border grid place-items-center" aria-label="알림">
+        <Link to="/notifications" className="size-10 rounded-full bg-surface border border-border grid place-items-center" aria-label="알림">
           <Bell className="size-5" />
-        </button>
+        </Link>
       </header>
 
       <main className="px-5 pt-4 space-y-4">
