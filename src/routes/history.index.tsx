@@ -74,7 +74,7 @@ function timeLabel(d: Date) {
 
 function History() {
   const [tab, setTab] = useState<Tab>("오늘");
-  const [period, setPeriod] = useState<Period>("전체 기간");
+  const [showRange, setShowRange] = useState(false);
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [remote, setRemote] = useState<Item[]>([]);
@@ -123,17 +123,7 @@ function History() {
       list = list.filter((d) => isSameDay(d.date, now));
     }
 
-    if (period === "오늘") {
-      list = list.filter((d) => isSameDay(d.date, now));
-    } else if (period === "최근 7일") {
-      const c = new Date(now);
-      c.setDate(c.getDate() - 7);
-      list = list.filter((d) => d.date >= c);
-    } else if (period === "최근 30일") {
-      const c = new Date(now);
-      c.setDate(c.getDate() - 30);
-      list = list.filter((d) => d.date >= c);
-    } else if (period === "직접 선택") {
+    if (showRange) {
       if (from) {
         const f = new Date(from);
         f.setHours(0, 0, 0, 0);
@@ -147,21 +137,7 @@ function History() {
     }
 
     return list;
-  }, [tab, period, from, to, remote]);
-
-  const grouped = useMemo(() => {
-    if (tab !== "전체") return null;
-    const map = new Map<number, Item[]>();
-    for (const it of filtered) {
-      const k = startOfWeek(it.date).getTime();
-      const arr = map.get(k) ?? [];
-      arr.push(it);
-      map.set(k, arr);
-    }
-    return Array.from(map.entries())
-      .sort((a, b) => b[0] - a[0])
-      .map(([k, items]) => ({ start: new Date(k), items }));
-  }, [tab, filtered]);
+  }, [tab, showRange, from, to, remote]);
 
   return (
     <AppShell withBottomNav>
@@ -186,20 +162,19 @@ function History() {
           </div>
 
           <button
-            onClick={() => setPeriod("직접 선택")}
+            onClick={() => setShowRange((v) => !v)}
             className={cn(
               "px-3 h-9 rounded-full text-[12px] font-medium border transition-all",
-              period === "직접 선택"
+              showRange
                 ? "bg-primary/10 text-primary border-primary"
                 : "bg-surface text-muted-foreground border-border"
             )}
           >
-            기간 설정
+            기간 지정
           </button>
         </div>
 
-
-        {period === "직접 선택" && (
+        {showRange && (
           <div className="mt-2 flex items-center gap-2">
             <input
               type="date"
@@ -218,33 +193,12 @@ function History() {
         )}
       </header>
 
-      {tab === "오늘" ? (
-        <ul className="px-5 mt-4 space-y-2 pb-6">
-          {filtered.map((d) => (
-            <Row key={d.id} d={d} />
-          ))}
-          {filtered.length === 0 && <EmptyState />}
-        </ul>
-      ) : (
-        <div className="px-5 mt-4 pb-6 space-y-5">
-          {grouped && grouped.length > 0 ? (
-            grouped.map((g) => (
-              <section key={g.start.getTime()}>
-                <h2 className="text-[12.5px] font-semibold text-muted-foreground mb-2">
-                  {weekLabel(g.start)}
-                </h2>
-                <ul className="space-y-2">
-                  {g.items.map((d) => (
-                    <Row key={d.id} d={d} />
-                  ))}
-                </ul>
-              </section>
-            ))
-          ) : (
-            <EmptyState />
-          )}
-        </div>
-      )}
+      <ul className="px-5 mt-4 space-y-2 pb-6">
+        {filtered.map((d) => (
+          <Row key={d.id} d={d} />
+        ))}
+        {filtered.length === 0 && <EmptyState />}
+      </ul>
       <BottomNav />
     </AppShell>
   );
