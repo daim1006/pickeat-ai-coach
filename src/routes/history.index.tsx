@@ -193,37 +193,35 @@ function History() {
         <h1 className="text-[22px] font-extrabold tracking-tight">기록</h1>
         <p className="text-[13px] text-muted-foreground mt-1">스캔한 음식과 분석을 한눈에 봐요</p>
 
-        <div className="mt-4 inline-flex p-1 bg-muted rounded-full">
-          {tabs.map((x) => (
-            <button
-              key={x}
-              onClick={() => setTab(x)}
-              className={cn(
-                "px-4 h-9 rounded-full text-[13px] font-medium transition-all",
-                tab === x ? "bg-surface text-foreground shadow-[var(--shadow-soft)]" : "text-muted-foreground"
-              )}
-            >
-              {x}
-            </button>
-          ))}
+        <div className="mt-4 flex items-center justify-between gap-2">
+          <div className="inline-flex p-1 bg-muted rounded-full">
+            {tabs.map((x) => (
+              <button
+                key={x}
+                onClick={() => setTab(x)}
+                className={cn(
+                  "px-4 h-9 rounded-full text-[13px] font-medium transition-all",
+                  tab === x ? "bg-surface text-foreground shadow-[var(--shadow-soft)]" : "text-muted-foreground"
+                )}
+              >
+                {x}
+              </button>
+            ))}
+          </div>
+
+          <button
+            onClick={() => setPeriod("직접 선택")}
+            className={cn(
+              "px-3 h-9 rounded-full text-[12px] font-medium border transition-all",
+              period === "직접 선택"
+                ? "bg-primary/10 text-primary border-primary"
+                : "bg-surface text-muted-foreground border-border"
+            )}
+          >
+            기간 설정
+          </button>
         </div>
 
-        <div className="mt-3 flex flex-wrap gap-1.5">
-          {periods.map((p) => (
-            <button
-              key={p}
-              onClick={() => setPeriod(p)}
-              className={cn(
-                "px-3 h-8 rounded-full text-[12px] font-medium border transition-all",
-                period === p
-                  ? "bg-primary/10 text-primary border-primary"
-                  : "bg-surface text-muted-foreground border-border"
-              )}
-            >
-              {p}
-            </button>
-          ))}
-        </div>
 
         {period === "직접 선택" && (
           <div className="mt-2 flex items-center gap-2">
