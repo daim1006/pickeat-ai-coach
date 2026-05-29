@@ -43,7 +43,11 @@ const data: Item[] = [
   { id: "3", name: "초코칩 쿠키", brand: "마켓오", status: "bad", date: today(10, 15) },
   { id: "4", name: "단백질 쉐이크", brand: "마이프로틴", status: "ok", date: daysAgo(1, 19, 40) },
   { id: "5", name: "라면", brand: "농심", status: "bad", date: daysAgo(1, 21, 10) },
-];
+  { id: "6", name: "그릭요거트", brand: "매일유업", status: "ok", date: daysAgo(3, 9, 0) },
+  { id: "7", name: "아메리카노", brand: "스타벅스", status: "warn", date: daysAgo(10, 8, 30) },
+  { id: "8", name: "삼각김밥 참치마요", brand: "GS25", status: "warn", date: daysAgo(25, 12, 0) },
+  { id: "9", name: "초콜릿바", brand: "허쉬", status: "bad", date: daysAgo(40, 15, 45) },
+].sort((a, b) => b.date.getTime() - a.date.getTime());
 
 const badge: Record<string, { l: string; c: string }> = {
   ok: { l: "괜찮아요", c: "bg-success/15 text-success" },
