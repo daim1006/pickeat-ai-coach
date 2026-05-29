@@ -13,7 +13,7 @@ type Step = 1 | 2 | 3;
 const STEP_COPY: Record<Step, { label: string; title: string; description: string; storageKey: string }> = {
   1: {
     label: "영양정보",
-    title: "영양정보 표를 스캔해주세요",
+    title: "원재료표를 스캔해주세요",
     description: "영양성분표 전체가 잘 보이도록 촬영해주세요.",
     storageKey: "scan.image.nutrition",
   },
