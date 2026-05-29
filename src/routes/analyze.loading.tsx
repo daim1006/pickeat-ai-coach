@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { Mascot } from "@/components/Mascot";
-import { scanFood, N8nError } from "@/lib/n8n";
+import { scanFood } from "@/lib/n8n";
 
 export const Route = createFileRoute("/analyze/loading")({
   component: Loading,
