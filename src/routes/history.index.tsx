@@ -30,21 +30,21 @@ const daysAgo = (n: number, h: number, m: number) => {
 type Item = {
   id: string;
   name: string;
-  brand: string;
+  foodType: string;
   status: "ok" | "warn" | "bad";
   date: Date;
 };
 
 const data: Item[] = ([
-  { id: "1", name: "제로콜라 500ml", brand: "코카콜라", status: "warn", date: today(13, 20) },
-  { id: "2", name: "닭가슴살 샐러드", brand: "샐러디", status: "ok", date: today(12, 30) },
-  { id: "3", name: "초코칩 쿠키", brand: "마켓오", status: "bad", date: today(10, 15) },
-  { id: "4", name: "단백질 쉐이크", brand: "마이프로틴", status: "ok", date: daysAgo(1, 19, 40) },
-  { id: "5", name: "라면", brand: "농심", status: "bad", date: daysAgo(1, 21, 10) },
-  { id: "6", name: "그릭요거트", brand: "매일유업", status: "ok", date: daysAgo(3, 9, 0) },
-  { id: "7", name: "아메리카노", brand: "스타벅스", status: "warn", date: daysAgo(10, 8, 30) },
-  { id: "8", name: "삼각김밥 참치마요", brand: "GS25", status: "warn", date: daysAgo(25, 12, 0) },
-  { id: "9", name: "초콜릿바", brand: "허쉬", status: "bad", date: daysAgo(40, 15, 45) },
+  { id: "1", name: "제로콜라 500ml", foodType: "탄산음료", status: "warn", date: today(13, 20) },
+  { id: "2", name: "닭가슴살 샐러드", foodType: "즉석조리식품", status: "ok", date: today(12, 30) },
+  { id: "3", name: "초코칩 쿠키", foodType: "과자", status: "bad", date: today(10, 15) },
+  { id: "4", name: "단백질 쉐이크", foodType: "단백질 가공식품", status: "ok", date: daysAgo(1, 19, 40) },
+  { id: "5", name: "신라면", foodType: "유탕면", status: "bad", date: daysAgo(1, 21, 10) },
+  { id: "6", name: "그릭요거트", foodType: "발효유", status: "ok", date: daysAgo(3, 9, 0) },
+  { id: "7", name: "아메리카노", foodType: "커피", status: "warn", date: daysAgo(10, 8, 30) },
+  { id: "8", name: "삼각김밥 참치마요", foodType: "즉석섭취식품", status: "warn", date: daysAgo(25, 12, 0) },
+  { id: "9", name: "초콜릿바", foodType: "초콜릿류", status: "bad", date: daysAgo(40, 15, 45) },
 ] as Item[]).sort((a, b) => b.date.getTime() - a.date.getTime());
 
 const badge: Record<string, { l: string; c: string }> = {
