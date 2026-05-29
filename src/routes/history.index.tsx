@@ -173,19 +173,6 @@ function History() {
     return list;
   }, [tab, period, from, to, remote]);
 
-  const grouped = useMemo(() => {
-    if (tab !== "전체") return null;
-    const map = new Map<number, Item[]>();
-    for (const it of filtered) {
-      const k = startOfWeek(it.date).getTime();
-      const arr = map.get(k) ?? [];
-      arr.push(it);
-      map.set(k, arr);
-    }
-    return Array.from(map.entries())
-      .sort((a, b) => b[0] - a[0])
-      .map(([k, items]) => ({ start: new Date(k), items }));
-  }, [tab, filtered]);
 
   return (
     <AppShell withBottomNav>
