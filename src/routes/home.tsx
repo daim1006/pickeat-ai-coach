@@ -31,9 +31,9 @@ const DEFAULT_FOCUS: FocusItem[] = [
 
 
 const eaten = [
-  { name: "제로콜라 500ml", brand: "코카콜라", status: "ok", time: "13:20" },
-  { name: "닭가슴살 샐러드", brand: "샐러디", status: "ok", time: "12:30" },
-  { name: "초코칩 쿠키", brand: "마켓오", status: "warn", time: "10:15" },
+  { name: "제로콜라 500ml", foodType: "탄산음료", status: "ok", time: "13:20" },
+  { name: "닭가슴살 샐러드", foodType: "즉석조리식품", status: "ok", time: "12:30" },
+  { name: "초코칩 쿠키", foodType: "과자", status: "warn", time: "10:15" },
 ];
 
 const badge: Record<string, { label: string; cls: string }> = {
