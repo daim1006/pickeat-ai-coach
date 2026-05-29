@@ -84,6 +84,13 @@ function SignUp() {
         >
           가입하고 시작하기
         </button>
+        <button
+          type="button"
+          onClick={() => navigate({ to: "/login" })}
+          className="mt-3 w-full h-12 text-[14px] font-medium text-muted-foreground active:text-foreground"
+        >
+          이미 계정이 있어요
+        </button>
       </form>
     </AppShell>
   );
