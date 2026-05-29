@@ -244,33 +244,12 @@ function History() {
         )}
       </header>
 
-      {tab === "오늘" ? (
-        <ul className="px-5 mt-4 space-y-2 pb-6">
-          {filtered.map((d) => (
-            <Row key={d.id} d={d} />
-          ))}
-          {filtered.length === 0 && <EmptyState />}
-        </ul>
-      ) : (
-        <div className="px-5 mt-4 pb-6 space-y-5">
-          {grouped && grouped.length > 0 ? (
-            grouped.map((g) => (
-              <section key={g.start.getTime()}>
-                <h2 className="text-[12.5px] font-semibold text-muted-foreground mb-2">
-                  {weekLabel(g.start)}
-                </h2>
-                <ul className="space-y-2">
-                  {g.items.map((d) => (
-                    <Row key={d.id} d={d} />
-                  ))}
-                </ul>
-              </section>
-            ))
-          ) : (
-            <EmptyState />
-          )}
-        </div>
-      )}
+      <ul className="px-5 mt-4 space-y-2 pb-6">
+        {filtered.map((d) => (
+          <Row key={d.id} d={d} />
+        ))}
+        {filtered.length === 0 && <EmptyState />}
+      </ul>
       <BottomNav />
     </AppShell>
   );
