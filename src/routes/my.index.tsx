@@ -74,7 +74,7 @@ function My() {
   const goalDesc = profile.healthGoal ?? "체중 관리";
 
   const settings = [
-    { to: "/my/goal", icon: Target, label: "건강 목표", desc: "체중 관리" },
+    { to: "/my/goal", icon: Target, label: "건강 목표", desc: goalDesc },
     { to: "/my/focus", icon: Filter, label: "집중 관리 성분", desc: focusDesc },
     { to: "/my/restricted", icon: Ban, label: "피해야 할 성분", desc: restrictedCount === 0 ? "없음" : `${restrictedCount}개` },
     { to: "/my/subscription", icon: Crown, label: "구독 관리", desc: "Free 플랜" },
