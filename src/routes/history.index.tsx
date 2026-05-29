@@ -74,7 +74,7 @@ function timeLabel(d: Date) {
 
 function History() {
   const [tab, setTab] = useState<Tab>("오늘");
-  const [period, setPeriod] = useState<Period>("전체 기간");
+  const [rangeOpen, setRangeOpen] = useState(false);
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [remote, setRemote] = useState<Item[]>([]);
@@ -123,17 +123,7 @@ function History() {
       list = list.filter((d) => isSameDay(d.date, now));
     }
 
-    if (period === "오늘") {
-      list = list.filter((d) => isSameDay(d.date, now));
-    } else if (period === "최근 7일") {
-      const c = new Date(now);
-      c.setDate(c.getDate() - 7);
-      list = list.filter((d) => d.date >= c);
-    } else if (period === "최근 30일") {
-      const c = new Date(now);
-      c.setDate(c.getDate() - 30);
-      list = list.filter((d) => d.date >= c);
-    } else if (period === "직접 선택") {
+    if (rangeOpen) {
       if (from) {
         const f = new Date(from);
         f.setHours(0, 0, 0, 0);
@@ -147,7 +137,7 @@ function History() {
     }
 
     return list;
-  }, [tab, period, from, to, remote]);
+  }, [tab, rangeOpen, from, to, remote]);
 
 
   return (
