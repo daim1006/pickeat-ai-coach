@@ -24,7 +24,7 @@ interface AlternativeRow {
   tag?: string;
 }
 interface AnalysisData {
-  product?: { name?: string; brand?: string; tags?: string[] };
+  product?: { name?: string; brand?: string; foodType?: string; tags?: string[] };
   verdict?: Verdict;
   verdictTitle?: string;
   verdictSub?: string;
