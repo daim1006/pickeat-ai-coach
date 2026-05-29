@@ -30,7 +30,10 @@ function Start() {
           >
             시작하기
           </Link>
-          <button className="block w-full h-14 rounded-2xl bg-surface border border-border text-sm font-medium text-foreground active:bg-muted">
+          <button
+            onClick={() => navigate({ to: "/login" })}
+            className="block w-full h-14 rounded-2xl bg-surface border border-border text-sm font-medium text-foreground active:bg-muted"
+          >
             이미 계정이 있어요
           </button>
           <p className="text-[11px] text-center text-muted-foreground pt-2">
