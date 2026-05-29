@@ -177,7 +177,7 @@ function Scan() {
         console.warn("sessionStorage write failed", e);
       }
 
-      if (step < 3) {
+      if (step < 2) {
         setStep((step + 1) as Step);
         setCapturing(false);
         return;
