@@ -24,7 +24,7 @@ function Start() {
 
         <div className="space-y-3">
           <Link
-            to="/onboarding/info"
+            to="/signup"
             className="block w-full h-14 rounded-2xl bg-primary text-primary-foreground text-base font-semibold grid place-items-center active:scale-[0.99] transition-transform"
           >
             시작하기
