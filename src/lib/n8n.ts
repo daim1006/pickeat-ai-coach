@@ -137,6 +137,29 @@ export function scanNutrition<T = unknown>(payload: ScanPayload, options?: CallN
   return callN8n<T, ScanPayload>("scan", payload, options);
 }
 
+export interface ScanFoodPayload {
+  image_nutrition: string;
+  image_ingredients: string;
+  user_health_goal: string;
+}
+
+export interface ScanFoodResponse {
+  success: boolean;
+  product_name?: string;
+  food_type?: string;
+  nutrition?: unknown;
+  ingredients?: string;
+  warning_ingredients?: unknown[];
+  verdict?: string;
+  ai_comment?: string;
+  [k: string]: unknown;
+}
+
+/** 음식 스캔 (영양/원재료 동시 분석) */
+export function scanFood(payload: ScanFoodPayload, options?: CallN8nOptions) {
+  return callN8n<ScanFoodResponse, ScanFoodPayload>("scanFood", payload, options);
+}
+
 /** 누적 섭취량 업데이트 */
 export function saveIntake<T = unknown, P = unknown>(payload: P, options?: CallN8nOptions) {
   return callN8n<T, P>("saveIntake", payload, options);
