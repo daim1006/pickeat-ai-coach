@@ -8,6 +8,7 @@ export const Route = createFileRoute("/start")({
 });
 
 function Start() {
+  const navigate = useNavigate();
   return (
     <AppShell>
       <div className="flex-1 flex flex-col px-6 pt-16 pb-10">
