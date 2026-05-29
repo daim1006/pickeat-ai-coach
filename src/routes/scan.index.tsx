@@ -1,4 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { X, ImageIcon, HelpCircle, Zap } from "lucide-react";
 
@@ -8,6 +10,105 @@ export const Route = createFileRoute("/scan/")({
 
 function Scan() {
   const navigate = useNavigate();
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const stopStream = () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((t) => t.stop());
+        streamRef.current = null;
+      }
+    };
+
+    const startCamera = async () => {
+      try {
+        if (typeof window !== "undefined" && window.location.protocol !== "https:" && window.location.hostname !== "localhost") {
+          const msg = "카메라 사용을 위해 HTTPS 환경이 필요합니다.";
+          setErrorMsg(msg);
+          toast.error(msg);
+          return;
+        }
+
+        if (!navigator.mediaDevices?.getUserMedia) {
+          const msg = "이 브라우저는 카메라를 지원하지 않습니다.";
+          setErrorMsg(msg);
+          toast.error(msg);
+          return;
+        }
+
+        stopStream();
+
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: { ideal: "environment" },
+            width: { ideal: 1280 },
+            height: { ideal: 720 },
+          },
+          audio: false,
+        });
+
+        if (cancelled) {
+          stream.getTracks().forEach((t) => t.stop());
+          return;
+        }
+
+        streamRef.current = stream;
+        const video = videoRef.current;
+        if (video) {
+          video.srcObject = stream;
+          video.setAttribute("autoplay", "");
+          video.setAttribute("playsinline", "");
+          video.setAttribute("muted", "");
+          video.muted = true;
+          try {
+            await video.play();
+          } catch (playErr) {
+            console.warn("video.play() failed:", playErr);
+          }
+          setErrorMsg(null);
+        }
+      } catch (err: any) {
+        console.error("Camera Error:", err?.name, err?.message);
+        let msg = "카메라를 열 수 없습니다.";
+        switch (err?.name) {
+          case "NotAllowedError":
+          case "PermissionDeniedError":
+            msg = "카메라 접근 권한이 거부되었습니다. 브라우저 설정에서 허용해주세요.";
+            break;
+          case "NotFoundError":
+          case "DevicesNotFoundError":
+            msg = "사용 가능한 카메라 장치를 찾을 수 없습니다.";
+            break;
+          case "NotReadableError":
+          case "TrackStartError":
+            msg = "카메라 장치에 접근할 수 없습니다. 다른 앱에서 사용 중일 수 있습니다.";
+            break;
+          case "OverconstrainedError":
+          case "ConstraintNotSatisfiedError":
+            msg = "요청한 카메라 설정을 지원하지 않습니다.";
+            break;
+          case "SecurityError":
+            msg = "보안 정책으로 카메라를 사용할 수 없습니다 (HTTPS 필요).";
+            break;
+        }
+        setErrorMsg(msg);
+        toast.error(msg);
+      }
+    };
+
+    startCamera();
+
+    return () => {
+      cancelled = true;
+      stopStream();
+      if (videoRef.current) videoRef.current.srcObject = null;
+    };
+  }, []);
+
   return (
     <AppShell>
       <div className="relative flex-1 min-h-screen bg-[#0c0d0f] text-white flex flex-col">
@@ -24,8 +125,19 @@ function Scan() {
         {/* camera viewport */}
         <div className="flex-1 relative flex items-center justify-center px-6">
           <div className="absolute inset-x-6 top-1/2 -translate-y-1/2 aspect-[3/4] rounded-3xl overflow-hidden">
-            {/* fake camera bg */}
-            <div className="absolute inset-0 bg-gradient-to-br from-zinc-700 via-zinc-800 to-zinc-900" />
+            {/* live camera */}
+            <video
+              ref={videoRef}
+              autoPlay
+              playsInline
+              muted
+              className="absolute inset-0 w-full h-full object-cover bg-zinc-900"
+            />
+            {errorMsg && (
+              <div className="absolute inset-0 bg-gradient-to-br from-zinc-700 via-zinc-800 to-zinc-900 flex items-center justify-center p-6 text-center text-[13px] text-white/90">
+                {errorMsg}
+              </div>
+            )}
             {/* corner frame */}
             <Corners />
             <div className="absolute inset-x-0 top-6 text-center text-[13px] font-medium text-white/90">
